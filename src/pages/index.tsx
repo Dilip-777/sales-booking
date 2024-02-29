@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import SideNavbar from "@/components/SideBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
