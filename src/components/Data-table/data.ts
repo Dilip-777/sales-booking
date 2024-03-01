@@ -4,6 +4,8 @@ import {
   ArrowUpIcon,
   BookX,
   CheckCircleIcon,
+  PauseCircle,
+  PlayCircle,
   StopCircleIcon,
   TicketCheck,
 } from "lucide-react";
@@ -43,6 +45,19 @@ export const statuses = [
     value: "cancelled",
     label: "Cancelled",
     icon: BookX,
+  },
+];
+
+export const statuses1 = [
+  {
+    value: "active",
+    label: "Active",
+    icon: PlayCircle,
+  },
+  {
+    value: "inactive",
+    label: "Inactive",
+    icon: PauseCircle,
   },
 ];
 

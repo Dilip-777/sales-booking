@@ -1,10 +1,12 @@
+"use client";
+
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../Data-table/data-table-column-header";
-import { statuses1 } from "../Data-table/data";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
+import { statuses1 } from "../Data-table/data";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -41,6 +43,36 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "zone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Zone" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("zone")}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "address",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Address" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("address")}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",

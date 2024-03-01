@@ -8,9 +8,9 @@ import {
   LayoutDashboard,
   UsersRound,
   Settings,
-  ChevronRight,
   FileDown,
   ChevronLeft,
+  Box,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -67,7 +67,7 @@ export default function SideNavbar({}: Props) {
           {
             title: "Items",
             href: "/items",
-            icon: ShoppingCart,
+            icon: Box,
             variant: "ghost",
           },
           {

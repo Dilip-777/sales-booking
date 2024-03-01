@@ -3,25 +3,28 @@ import SideNavbar from "@/components/SideBar";
 
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   return (
-    <div className="flex h-screen overflow-hidden ">
-      <SideNavbar />
-      <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden ">
-        <Header />
+    <div className="flex h-screen overflow-hidden bg-gray-200">
+      {router.pathname !== "/signin" && router.pathname !== "/signup" ? (
+        <>
+          <SideNavbar />
+          <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden ">
+            <Header />
 
-        <main className="bg-gray-200 p-4 md:p-6 ">
-          <div className="mx-auto max-w-screen-2xl rounded-lg bg-white z-1 border p-2">
-            <Component {...pageProps} />
+            <main className=" p-4 md:p-6 ">
+              <div className="mx-auto max-w-screen-2xl rounded-lg bg-white z-1 border p-2">
+                <Component {...pageProps} />
+              </div>
+            </main>
           </div>
-        </main>
-      </div>
+        </>
+      ) : (
+        <Component {...pageProps} />
+      )}
     </div>
-    // <div className="flex h-screen">
-    //   <SideNavbar />
-    //   <Header />
-    //   <Component {...pageProps} />
-    // </div>
   );
 }

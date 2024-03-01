@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import { PauseCircle, PlayCircle, Plus } from "lucide-react";
 
 import { DataTable } from "@/components/Data-table";
-import { priorities } from "@/components/Data-table/data";
+import { priorities, statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "../Zone/columns";
 
@@ -31,19 +31,6 @@ const data = [
   { name: "Category T", status: "active" },
 ];
 
-const statuses = [
-  {
-    value: "active",
-    label: "Active",
-    icon: PlayCircle,
-  },
-  {
-    value: "inactive",
-    label: "Inactive",
-    icon: PauseCircle,
-  },
-];
-
 export default function Category() {
   return (
     <main
@@ -60,7 +47,7 @@ export default function Category() {
         filterName="name"
         data={data}
         columns={columns}
-        statuses={statuses}
+        statuses={statuses1}
         priorities={[]}
       />
     </main>
