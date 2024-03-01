@@ -9,6 +9,8 @@ import {
   UsersRound,
   Settings,
   ChevronRight,
+  FileDown,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -34,21 +36,25 @@ export default function SideNavbar({}: Props) {
   return (
     <div
       className={cn(
-        "relative max-w-[17%]  border-r px-3  pb-10 pt-24 transition-all duration-1000 ease-in-out bg-white ",
-        !isCollapsed1 ? "w-full" : "w-16"
+        "relative max-w-[17%]  border-r px-3  pb-10 pt-4 transition-all duration-1000 ease-in-out bg-white ",
+        !isCollapsed1 ? "w-full" : "w-20"
       )}
     >
-      {
-        <div className="absolute right-[-20px] top-7 z-40">
-          <Button
-            onClick={toggleSidebar}
-            variant="secondary"
-            className=" rounded-full p-2"
-          >
-            <ChevronRight />
-          </Button>
-        </div>
-      }
+      <div
+        className={cn(
+          "absolute right-[-20px] top-7 z-40 transition-all duration-500 ease-in-out",
+          isCollapsed1 ? "rotate-180" : "rotate-0"
+        )}
+      >
+        <Button
+          onClick={toggleSidebar}
+          variant="secondary"
+          className=" rounded-full p-2"
+        >
+          <ChevronLeft />
+        </Button>
+      </div>
+      <p className="text-md font-bold px-3 leading-7">Logo</p>
       <Nav
         isCollapsed={isCollapsed}
         links={[
@@ -59,21 +65,28 @@ export default function SideNavbar({}: Props) {
             variant: "default",
           },
           {
-            title: "Users",
-            href: "/users",
-            icon: UsersRound,
-            variant: "ghost",
-          },
-          {
-            title: "Orders",
-            href: "/orders",
+            title: "Items",
+            href: "/items",
             icon: ShoppingCart,
             variant: "ghost",
           },
           {
+            title: "Master",
+            href: "/master",
+            icon: UsersRound,
+            variant: "ghost",
+          },
+
+          {
             title: "Settings",
             href: "/settings",
             icon: Settings,
+            variant: "ghost",
+          },
+          {
+            title: "Record",
+            href: "/records",
+            icon: FileDown,
             variant: "ghost",
           },
         ]}

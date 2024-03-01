@@ -25,16 +25,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   return (
-    <header className="sticky top-0   p-4 shadow-md flex justify-between flex-row-reverse items-center w-full h-20">
+    <header className="sticky top-0 z-10 bg-white p-4 shadow-md flex justify-between flex-row-reverse items-center w-full h-20 backdrop-blur-sm">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-4">
           <span className="text-sm">Welcome, John Doe</span>
