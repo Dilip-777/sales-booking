@@ -39,6 +39,7 @@ interface DataTableProps<TData, TValue> {
     label: string;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
+  filterName: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -46,6 +47,7 @@ export function DataTable<TData, TValue>({
   data,
   statuses,
   priorities,
+  filterName,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -80,6 +82,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 w-full">
       <DataTableToolbar
+        filterName={filterName}
         statuses={statuses}
         priorities={priorities}
         table={table}

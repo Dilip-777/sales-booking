@@ -1,13 +1,14 @@
 import { Inter } from "next/font/google";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Category from "@/components/Category";
+import Zone from "@/components/Zone";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Master() {
   return (
     <main
-      className={`flex flex-col items-center gap-4 h-screen p-4 ${inter.className}`}
+      className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <Tabs defaultValue="category" className="w-full">
         <TabsList className="w-1/2">
@@ -27,7 +28,9 @@ export default function Master() {
         <TabsContent value="category">
           <Category />
         </TabsContent>
-        <TabsContent value="zone">Zone</TabsContent>
+        <TabsContent value="zone">
+          <Zone />
+        </TabsContent>
         <TabsContent value="company">Company</TabsContent>
         <TabsContent value="delete">Delete</TabsContent>
       </Tabs>

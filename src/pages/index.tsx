@@ -1,15 +1,4 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import SideNavbar from "@/components/SideBar";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Card,
   CardContent,
@@ -134,6 +123,7 @@ export default function Home() {
         {/* <h1 className="text-2xl font-semibold">Manage Orders</h1> */}
       </div>
       <DataTable
+        filterName="name"
         data={data}
         columns={columns}
         statuses={statuses}

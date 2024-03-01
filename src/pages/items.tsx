@@ -21,6 +21,7 @@ export default function Home() {
         </Button>
       </div>
       <DataTable
+        filterName="name"
         data={data}
         columns={columns}
         statuses={statuses}
