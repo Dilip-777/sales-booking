@@ -32,7 +32,7 @@ export const statuses = [
     icon: TicketCheck,
   },
   {
-    value: "in progress",
+    value: "inProgress",
     label: "In Progress",
     icon: StopCircleIcon,
   },
@@ -42,8 +42,8 @@ export const statuses = [
     icon: CheckCircleIcon,
   },
   {
-    value: "cancelled",
-    label: "Cancelled",
+    value: "canceled",
+    label: "Canceled",
     icon: BookX,
   },
 ];

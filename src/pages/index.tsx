@@ -10,10 +10,14 @@ import {
 import { DataTable } from "@/components/Data-table";
 import { data, priorities, statuses } from "@/components/Data-table/data";
 import { columns } from "@/components/Data-table/columns";
+import { useSession } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { data: session } = useSession();
+  console.log(session, "session");
+
   return (
     <main
       className={`flex min-h-screen flex-col items-center gap-4  p-4 ${inter.className}`}

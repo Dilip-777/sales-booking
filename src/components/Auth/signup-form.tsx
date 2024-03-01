@@ -12,19 +12,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import axios from "axios";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [user, setUser] = React.useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
+  });
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/auth/register", user);
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
+    }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    setIsLoading(false);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 3000);
   }
 
   return (
@@ -37,7 +51,13 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="username">User Name</Label>
-              <Input id="username" placeholder="Enter User Name" required />
+              <Input
+                id="username"
+                placeholder="Enter User Name"
+                required
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -46,6 +66,8 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
@@ -55,6 +77,8 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
                 type="password"
                 placeholder="Enter your password"
                 required
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
@@ -64,6 +88,10 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
                 type="password"
                 placeholder="Confirm password"
                 required
+                value={user.confirmpassword}
+                onChange={(e) =>
+                  setUser({ ...user, confirmpassword: e.target.value })
+                }
               />
             </div>
           </CardContent>

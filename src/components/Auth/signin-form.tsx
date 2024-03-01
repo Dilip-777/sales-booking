@@ -12,20 +12,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState(false);
+  const [message, setMessage] = React.useState<string>("");
+  const [user, setUser] = React.useState({
+    username: "",
+    password: "",
+  });
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    const res = await signIn("credentials", {
+      username: user.username,
+      password: user.password,
+      redirect: false,
+    });
+    if (res?.error) {
+      setError(true);
+      setMessage(res.error);
+    } else {
+      console.log(res);
+      router.push("/");
+    }
+    setIsLoading(false);
   }
 
   return (
@@ -37,12 +56,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="username"
+                placeholder="Enter your username"
                 required
+                value={user.username}
+                onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
@@ -52,6 +72,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 type="password"
                 placeholder="Enter your password"
                 required
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
             </div>
           </CardContent>
