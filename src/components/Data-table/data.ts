@@ -32,13 +32,13 @@ export const statuses = [
     icon: TicketCheck,
   },
   {
-    value: "inProgress",
-    label: "In Progress",
+    value: "approved",
+    label: "Approved",
     icon: StopCircleIcon,
   },
   {
-    value: "done",
-    label: "Done",
+    value: "completed",
+    label: "Completed",
     icon: CheckCircleIcon,
   },
   {

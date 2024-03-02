@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { labels, priorities, statuses } from "./data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { Company, User } from "@/types/globa";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -37,18 +38,18 @@ export const columns: ColumnDef<any>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Order Id" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "category",
+    accessorKey: "company",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
+      <DataTableColumnHeader column={column} title="Company" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -57,16 +58,17 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("category")}
+            {(row.getValue("company") as Company).name}
           </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "unit",
+    id: "user",
+    accessorKey: "user",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Unit" />
+      <DataTableColumnHeader column={column} title="User" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -75,16 +77,16 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("unit")}
+            {(row.getValue("user") as User).username}
           </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "rate",
+    accessorKey: "total",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rate" />
+      <DataTableColumnHeader column={column} title="Total Amount" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -93,30 +95,13 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("rate")}
+            {row.getValue("total")}
           </span>
         </div>
       );
     },
   },
-  {
-    accessorKey: "weight",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Weight" />
-    ),
-    cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
 
-      return (
-        <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("weight")}
-          </span>
-        </div>
-      );
-    },
-  },
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -171,8 +156,4 @@ export const columns: ColumnDef<any>[] = [
   //       return value.includes(row.getValue(id));
   //     },
   //   },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
 ];

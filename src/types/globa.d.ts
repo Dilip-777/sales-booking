@@ -57,6 +57,7 @@ export interface OrderedItem {
   orderId: string;
   itemId: string;
   quantity: number;
+  amount: number;
   createdAt: Date;
   updatedAt: Date;
   item: Item;
@@ -68,6 +69,7 @@ export interface Order {
   userId: string;
   companyId: string;
   total: number;
+  requiredBy: Date;
   status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -83,8 +85,8 @@ export enum Status {
 
 export enum OrderStatus {
   ordered = "ordered",
-  inProgress = "inProgress",
-  done = "done",
+  approved = "approved",
+  completed = "completed",
   canceled = "canceled",
 }
 

@@ -1,4 +1,11 @@
-import { Delete, DeleteIcon, Edit, MoreVertical, Trash } from "lucide-react";
+import {
+  CheckCircle,
+  Delete,
+  DeleteIcon,
+  Edit,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import { Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -21,10 +28,16 @@ import { labels } from "./data";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  handleApprove?: (id: string) => void;
 }
 
 export function DataTableRowActions<TData>({
   row,
+  onEdit,
+  onDelete,
+  handleApprove,
 }: DataTableRowActionsProps<TData>) {
   //   const task = taskSchema.parse(row.original);
 
@@ -40,12 +53,25 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>
+        {handleApprove && (
+          <DropdownMenuItem onClick={() => handleApprove(row.getValue("id"))}>
+            <CheckCircle size={14} className="mr-2" /> Approve
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem
+          onClick={() => {
+            if (onEdit) onEdit(row.getValue("id"));
+          }}
+        >
           {" "}
           <Edit size={14} className="mr-2" /> Edit
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            if (onDelete) onDelete(row.getValue("id"));
+          }}
+        >
           <Trash size={14} className="mr-2" /> Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
