@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Category from "@/components/Category";
 import Zone from "@/components/Zone";
 import Company from "@/components/Company";
+import User from "@/components/User"; 
 import { DatePickerWithRange } from "@/components/ui/date-range";
 import React from "react";
 import { addDays } from "date-fns";
@@ -34,6 +35,9 @@ export default function Master() {
           <TabsTrigger value="company" className="w-full">
             Company
           </TabsTrigger>
+          <TabsTrigger value="user" className="w-full">
+            User 
+          </TabsTrigger>
           <TabsTrigger value="delete" className="w-full">
             Delete
           </TabsTrigger>
@@ -46,6 +50,9 @@ export default function Master() {
         </TabsContent>
         <TabsContent value="company">
           <Company />
+        </TabsContent>
+        <TabsContent value = "user" className="w-full">
+          <User/>
         </TabsContent>
         <TabsContent value="delete">
           <div className="flex flex-col gap-4 p-4">

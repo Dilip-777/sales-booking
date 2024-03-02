@@ -79,6 +79,8 @@ export const priorities = [
   },
 ];
 
+export const role = [ "ADMIN" , "DISPATCHER", "SALESMAN"];  
+
 export const data = [
   {
     id: 1,
