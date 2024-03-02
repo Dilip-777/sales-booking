@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Nav } from "./ui/nav";
+import { Nav } from "../ui/nav";
 
 type Props = {};
 
@@ -12,12 +12,16 @@ import {
   ChevronLeft,
   Box,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { getNavItems } from "./navItems";
 
 export default function SideNavbar({}: Props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCollapsed1, setIsCollapsed1] = useState(false);
+
+  const { data: session } = useSession();
 
   function toggleSidebar() {
     setIsCollapsed1(!isCollapsed1);
@@ -57,39 +61,7 @@ export default function SideNavbar({}: Props) {
       <p className="text-md font-bold px-3 leading-7">Logo</p>
       <Nav
         isCollapsed={isCollapsed}
-        links={[
-          {
-            title: "Dashboard",
-            href: "/",
-            icon: LayoutDashboard,
-            variant: "default",
-          },
-          {
-            title: "Items",
-            href: "/items",
-            icon: Box,
-            variant: "ghost",
-          },
-          {
-            title: "Master",
-            href: "/master",
-            icon: UsersRound,
-            variant: "ghost",
-          },
-
-          {
-            title: "Settings",
-            href: "/settings",
-            icon: Settings,
-            variant: "ghost",
-          },
-          {
-            title: "Record",
-            href: "/records",
-            icon: FileDown,
-            variant: "ghost",
-          },
-        ]}
+        links={getNavItems(session?.user?.role || "")}
       />
     </div>
   );

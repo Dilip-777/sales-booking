@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import SideNavbar from "@/components/SideBar";
+import Header from "@/components/Layout/Header";
+import SideNavbar from "@/components/Layout/SideBar";
 
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";

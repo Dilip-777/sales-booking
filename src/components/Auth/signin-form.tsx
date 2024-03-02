@@ -56,7 +56,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="username">username</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 placeholder="Enter your username"

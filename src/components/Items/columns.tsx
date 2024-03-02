@@ -79,9 +79,9 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "rate",
+    accessorKey: "price",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rate" />
+      <DataTableColumnHeader column={column} title="Price" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -90,7 +90,7 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("rate")}
+            {row.getValue("price")}
           </span>
         </div>
       );

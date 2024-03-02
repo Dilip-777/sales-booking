@@ -9,6 +9,8 @@ import { addDays } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -65,3 +67,28 @@ export default function Master() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (req) => {
+  const session = await getSession(req);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  if (session.user?.role !== "ADMIN") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

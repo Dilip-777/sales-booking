@@ -5,6 +5,10 @@ import { DataTable } from "@/components/Data-table";
 import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "./columns";
+import { AddCompany } from "./addCompany";
+import { Company } from "@/types/globa";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -132,20 +136,31 @@ const data = [
 ];
 
 export default function Company() {
+  const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState<Company[]>([]);
+
+  const fetchCompanies = async () => {
+    setLoading(true);
+    const res = await axios.get("http://localhost:5000/company/getCompanies");
+    setCompanies(res.data.companies);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
   return (
     <main
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
         <h1 className="text-2xl font-semibold">Manage Company</h1>
-        <Button>
-          <Plus size={22} className="mr-2" />
-          Create Company
-        </Button>
+        <AddCompany fetchCompanies={fetchCompanies} />
       </div>
       <DataTable
         filterName="name"
-        data={data}
+        data={companies}
         columns={columns}
         statuses={statuses1}
         priorities={[]}

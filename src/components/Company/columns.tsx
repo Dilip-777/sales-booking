@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../Data-table/data-table-column-header";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import { statuses1 } from "../Data-table/data";
+import { Zone } from "@/types/globa";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -53,7 +54,7 @@ export const columns: ColumnDef<any>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("zone")}
+            {(row.getValue("zone") as Zone).name}
           </span>
         </div>
       );

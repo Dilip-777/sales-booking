@@ -1,5 +1,6 @@
-import { Metadata } from "next";
+import { GetServerSideProps, Metadata } from "next";
 import { SignUpForm } from "@/components/Auth/signup-form";
+import { getSession } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -15,3 +16,18 @@ export default function SignUp() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (req) => {
+  const session = await getSession(req);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};
