@@ -66,8 +66,4 @@ export const columns: ColumnDef<any>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
 ];

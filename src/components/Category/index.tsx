@@ -18,39 +18,29 @@ import { Button } from "@/components/ui/button";
 import { columns } from "./column";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Categories } from "@/types/globa";
+import { Categories, Status } from "@/types/globa";
 import { Spinner } from "../ui/Icons";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTableRowActions } from "../Data-table/data-table-row-actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const inter = Inter({ subsets: ["latin"] });
-
-const data = [
-  { name: "Category A", status: "active" },
-  { name: "Category B", status: "inactive" },
-  { name: "Category C", status: "active" },
-  { name: "Category D", status: "active" },
-  { name: "Category E", status: "inactive" },
-  { name: "Category F", status: "active" },
-  { name: "Category G", status: "inactive" },
-  { name: "Category H", status: "active" },
-  { name: "Category I", status: "active" },
-  { name: "Category J", status: "inactive" },
-  { name: "Category K", status: "active" },
-  { name: "Category L", status: "inactive" },
-  { name: "Category M", status: "inactive" },
-  { name: "Category N", status: "active" },
-  { name: "Category O", status: "active" },
-  { name: "Category P", status: "inactive" },
-  { name: "Category Q", status: "active" },
-  { name: "Category R", status: "inactive" },
-  { name: "Category S", status: "active" },
-  { name: "Category T", status: "active" },
-];
 
 export default function Category() {
   const [loading, setLoading] = useState(false);
   const [formloading, setFormLoading] = useState(false);
   const [categories, setCategories] = useState<Categories[]>([]);
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<Categories>({
+    id: "",
+    name: "",
+    status: "active" as Status,
+  });
   const [open, setOpen] = useState(false);
 
   const fetchCategories = async () => {
@@ -66,12 +56,16 @@ export default function Category() {
       if (!category) return;
       setFormLoading(true);
       await axios.post("http://localhost:5000/category/create", {
-        name: category,
+        ...category,
       });
       setFormLoading(false);
       fetchCategories();
       setOpen(false);
-      setCategory("");
+      setCategory({
+        id: "",
+        name: "",
+        status: "active" as Status,
+      });
     } catch (error) {}
   };
 
@@ -79,13 +73,38 @@ export default function Category() {
     fetchCategories();
   }, []);
 
+  const actionColumn: ColumnDef<any> = {
+    id: "actions",
+    cell: ({ row }) => (
+      <DataTableRowActions
+        onEdit={() => {
+          setCategory(row.original);
+          setOpen(true);
+        }}
+        row={row}
+      />
+    ),
+  };
+
+  const columnsWithActions = [...columns, actionColumn];
+
   return (
     <main
       className={`flex flex-col items-center gap-4 overflow-y-auto  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
         <h1 className="text-2xl font-semibold">Manage Category</h1>
-        <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+        <Dialog
+          open={open}
+          onOpenChange={(open) => {
+            setOpen(open);
+            setCategory({
+              id: "",
+              name: "",
+              status: "active" as Status,
+            });
+          }}
+        >
           <DialogTrigger asChild>
             <Button>
               <Plus size={22} className="mr-2" />
@@ -105,9 +124,37 @@ export default function Category() {
                     id="name"
                     placeholder="Enter Category Name"
                     required
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    value={category.name}
+                    onChange={(e) =>
+                      setCategory({
+                        ...category,
+                        name: e.target.value,
+                      })
+                    }
                   />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Select Status</Label>
+                  <Select
+                    required
+                    value={category.status}
+                    onValueChange={(value) =>
+                      setCategory({
+                        ...category,
+                        status: value as Status,
+                      })
+                    }
+                  >
+                    {/* <FormControl> */}
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a zone" />
+                    </SelectTrigger>
+                    {/* </FormControl> */}
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <DialogFooter>
@@ -123,7 +170,7 @@ export default function Category() {
       <DataTable
         filterName="name"
         data={categories}
-        columns={columns}
+        columns={columnsWithActions}
         statuses={statuses1}
         priorities={[]}
       />

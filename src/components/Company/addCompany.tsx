@@ -27,18 +27,26 @@ import { Spinner } from "../ui/Icons";
 export function AddCompany({
   selectedCompany,
   fetchCompanies,
+  setSelectedCompany,
+  open,
+  setOpen,
 }: {
   selectedCompany?: Company;
   fetchCompanies: () => void;
+  setSelectedCompany?: (company: Company) => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) {
   const [company, setCompany] = useState({
+    id: selectedCompany?.id || "",
     name: selectedCompany?.name || "",
     zoneId: selectedCompany?.zoneId || "",
     address: selectedCompany?.address || "",
+    status: selectedCompany?.status || "active",
   });
   const [loading, setLoading] = useState(false);
   const [zones, setZones] = useState<Zone[]>([]);
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   const fetchZones = async () => {
     const res = await axios.get("http://localhost:5000/zone/getZones");
@@ -48,6 +56,16 @@ export function AddCompany({
   useEffect(() => {
     fetchZones();
   }, []);
+
+  useEffect(() => {
+    setCompany({
+      id: selectedCompany?.id || "",
+      name: selectedCompany?.name || "",
+      zoneId: selectedCompany?.zoneId || "",
+      address: selectedCompany?.address || "",
+      status: selectedCompany?.status || "active",
+    });
+  }, [selectedCompany]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -59,9 +77,11 @@ export function AddCompany({
       );
       setOpen(false);
       setCompany({
+        id: "",
         name: "",
         zoneId: "",
         address: "",
+        status: "active",
       });
       fetchCompanies();
       setLoading(false);
@@ -72,7 +92,19 @@ export function AddCompany({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        setCompany({
+          id: "",
+          name: "",
+          zoneId: "",
+          address: "",
+          status: "active",
+        });
+      }}
+    >
       <DialogTrigger asChild>
         <Button>
           <Plus size={22} className="mr-2" />
@@ -81,7 +113,9 @@ export function AddCompany({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{selectedCompany ? "Edit" : "Add"} Company</DialogTitle>
+          <DialogTitle>
+            {selectedCompany?.id ? "Edit" : "Add"} Company
+          </DialogTitle>
         </DialogHeader>
         <div className="border border-border mt-0"></div>
         <form onSubmit={handleSubmit}>
@@ -127,6 +161,29 @@ export function AddCompany({
                   {/* <SelectItem value="Zone A">Zone A</SelectItem>
                   <SelectItem value="Zone B">Zone B</SelectItem>
                   <SelectItem value="Zone C">Zone C</SelectItem> */}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="name">Select Status</Label>
+              <Select
+                required
+                value={company.status}
+                onValueChange={(value) =>
+                  setCompany({
+                    ...company,
+                    status: value,
+                  })
+                }
+              >
+                {/* <FormControl> */}
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a zone" />
+                </SelectTrigger>
+                {/* </FormControl> */}
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </div>

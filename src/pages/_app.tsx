@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/router";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function App({
   Component,
@@ -30,6 +31,7 @@ export default function App({
         ) : (
           <Component {...pageProps} />
         )}
+        <Toaster />
       </SessionProvider>
     </div>
   );

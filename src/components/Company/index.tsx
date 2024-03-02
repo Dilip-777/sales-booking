@@ -9,139 +9,32 @@ import { AddCompany } from "./addCompany";
 import { Company } from "@/types/globa";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTableRowActions } from "../Data-table/data-table-row-actions";
+import DeleteModal from "../DeleteModal";
 
 const inter = Inter({ subsets: ["latin"] });
-
-const data = [
-  {
-    name: "Acme Corporation",
-    zone: "Zone 1",
-    address: "123 Main St",
-    status: "active",
-  },
-  {
-    name: "Widget Industries",
-    zone: "Zone 2",
-    address: "456 Elm St",
-    status: "inactive",
-  },
-  {
-    name: "TechNova Solutions",
-    zone: "Zone 3",
-    address: "789 Oak St",
-    status: "active",
-  },
-  {
-    name: "Global Dynamics",
-    zone: "Zone 4",
-    address: "101 Pine St",
-    status: "active",
-  },
-  {
-    name: "Innovate LLC",
-    zone: "Zone 5",
-    address: "555 Maple St",
-    status: "inactive",
-  },
-  {
-    name: "Phoenix Innovations",
-    zone: "Zone 6",
-    address: "888 Cedar St",
-    status: "active",
-  },
-  {
-    name: "Quantum Enterprises",
-    zone: "Zone 7",
-    address: "246 Birch St",
-    status: "inactive",
-  },
-  {
-    name: "Vanguard Solutions",
-    zone: "Zone 8",
-    address: "369 Spruce St",
-    status: "active",
-  },
-  {
-    name: "Eagle Eye Technologies",
-    zone: "Zone 9",
-    address: "777 Willow St",
-    status: "inactive",
-  },
-  {
-    name: "Pinnacle Systems",
-    zone: "Zone 10",
-    address: "444 Oak St",
-    status: "active",
-  },
-  {
-    name: "Zenith Innovations",
-    zone: "Zone 11",
-    address: "222 Elm St",
-    status: "inactive",
-  },
-  {
-    name: "NexGen Solutions",
-    zone: "Zone 12",
-    address: "999 Maple St",
-    status: "active",
-  },
-  {
-    name: "FutureTech Enterprises",
-    zone: "Zone 13",
-    address: "123 Pine St",
-    status: "active",
-  },
-  {
-    name: "Summit Dynamics",
-    zone: "Zone 14",
-    address: "456 Oak St",
-    status: "inactive",
-  },
-  {
-    name: "Omega Innovations",
-    zone: "Zone 15",
-    address: "789 Elm St",
-    status: "active",
-  },
-  {
-    name: "Apex Solutions",
-    zone: "Zone 16",
-    address: "101 Maple St",
-    status: "active",
-  },
-  {
-    name: "Visionary Ventures",
-    zone: "Zone 17",
-    address: "555 Cedar St",
-    status: "inactive",
-  },
-  {
-    name: "Strategic Solutions",
-    zone: "Zone 18",
-    address: "888 Birch St",
-    status: "active",
-  },
-  {
-    name: "Prime Technologies",
-    zone: "Zone 19",
-    address: "246 Willow St",
-    status: "inactive",
-  },
-  {
-    name: "Bright Ideas Inc.",
-    zone: "Zone 20",
-    address: "369 Spruce St",
-    status: "active",
-  },
-];
 
 export default function Company() {
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [company, setCompany] = useState<any>({
+    id: "",
+    name: "",
+    address: "",
+    zoneId: "",
+    status: "active",
+  });
+  const { data: session } = useSession();
+  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const fetchCompanies = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/company/getCompanies");
+    const res = await axios.get(
+      "http://localhost:5000/company/getCompanies?userId=" + session?.user?.id
+    );
     setCompanies(res.data.companies);
     setLoading(false);
   };
@@ -150,20 +43,70 @@ export default function Company() {
     fetchCompanies();
   }, []);
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete("http://localhost:5000/company/delete/" + company.id);
+      fetchCompanies();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const actionColumn: ColumnDef<any> = {
+    id: "actions",
+    cell: ({ row }) => (
+      <DataTableRowActions
+        onEdit={() => {
+          setCompany(row.original);
+          setOpen(true);
+        }}
+        onDelete={() => {
+          setCompany(row.original);
+          setOpenDelete(true);
+        }}
+        row={row}
+      />
+    ),
+  };
+
+  const columnsWithActions = [...columns, actionColumn];
+
   return (
     <main
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
         <h1 className="text-2xl font-semibold">Manage Company</h1>
-        <AddCompany fetchCompanies={fetchCompanies} />
+        <AddCompany
+          fetchCompanies={fetchCompanies}
+          selectedCompany={company}
+          setSelectedCompany={setCompany}
+          open={open}
+          setOpen={setOpen}
+        />
       </div>
       <DataTable
         filterName="name"
         data={companies}
-        columns={columns}
+        columns={columnsWithActions}
         statuses={statuses1}
         priorities={[]}
+      />
+      <DeleteModal
+        open={openDelete}
+        setOpen={(open) => {
+          setOpenDelete(open);
+
+          setCompany({
+            id: "",
+            name: "",
+            address: "",
+            zoneId: "",
+            status: "active",
+          });
+        }}
+        // fetch={fetchCompanies}
+        handleDelete={handleDelete}
       />
     </main>
   );

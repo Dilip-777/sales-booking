@@ -17,8 +17,8 @@ export interface Item {
   weight: number;
   unit: string;
   category: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   orderedItem?: OrderedItem[];
 }
 

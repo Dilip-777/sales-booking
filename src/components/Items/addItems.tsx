@@ -28,24 +28,27 @@ export function AddItem({
   selectedItem,
   setSelectItem,
   fetchItems,
+  open,
+  setOpen,
 }: {
-  selectedItem?: Item;
-  setSelectItem?: (item: Item) => void;
+  selectedItem: Item;
+  setSelectItem: (item: Item) => void;
   fetchItems: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) {
   const [item, setItem] = useState({
-    name: selectedItem?.name || "",
-    description: selectedItem?.description || "",
+    id: "",
+    name: "",
+    description: "",
     price: selectedItem?.price || undefined,
     weight: selectedItem?.weight || undefined,
-    unit: selectedItem?.unit || "",
-    category: selectedItem?.category || "",
+    unit: "",
+    category: "",
   });
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Categories[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
-
-  const [open, setOpen] = useState(false);
 
   const fetchCategories = async () => {
     const res = await axios.get("http://localhost:5000/category/getCategories");
@@ -62,6 +65,18 @@ export function AddItem({
     fetchUnits();
   }, []);
 
+  useEffect(() => {
+    setItem({
+      id: selectedItem?.id || "",
+      name: selectedItem?.name || "",
+      description: selectedItem?.description || "",
+      price: selectedItem?.price || undefined,
+      weight: selectedItem?.weight || undefined,
+      unit: selectedItem?.unit || "",
+      category: selectedItem?.category || "",
+    });
+  }, [selectedItem]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -70,6 +85,7 @@ export function AddItem({
       const res = await axios.post("http://localhost:5000/item/create", item);
       setOpen(false);
       setItem({
+        id: "",
         name: "",
         description: "",
         price: undefined,
@@ -91,12 +107,13 @@ export function AddItem({
       onOpenChange={(open) => {
         setOpen(open);
         setItem({
-          name: selectedItem?.name || "",
-          description: selectedItem?.description || "",
-          price: selectedItem?.price || undefined,
-          weight: selectedItem?.weight || undefined,
-          unit: selectedItem?.unit || "",
-          category: selectedItem?.category || "",
+          id: "",
+          name: "",
+          description: "",
+          price: undefined,
+          weight: undefined,
+          unit: "",
+          category: "",
         });
       }}
     >

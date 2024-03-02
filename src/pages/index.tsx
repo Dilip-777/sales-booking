@@ -27,8 +27,7 @@ export default function Home() {
 
   const fetchOrders = async () => {
     const res = await axios.get(
-      "http://localhost:5000/order/getOrders?userId=" +
-        (session?.user?.role === "SALESMAN" ? session?.user?.id : "")
+      "http://localhost:5000/order/getOrders?userId=" + session?.user?.id
     );
     setOrders(res.data.orders);
   };
@@ -45,6 +44,14 @@ export default function Home() {
         handleApprove={
           session?.user?.role === "ADMIN"
             ? (id) => router.push("/book-order?orderId=" + id + "&approve=true")
+            : undefined
+        }
+        handleApproveDispatch={
+          session?.user?.role === "DISPATCHER"
+            ? (id) =>
+                router.push(
+                  "/book-order?orderId=" + id + "&approveDispatch=true"
+                )
             : undefined
         }
         // handleDispatch={
@@ -67,18 +74,20 @@ export default function Home() {
     >
       {session?.user?.role !== "SALESMAN" && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Pending Approvals
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {orders.filter((o) => o.status === "ordered").length}
-              </div>
-            </CardContent>
-          </Card>
+          {session?.user?.role === "ADMIN" && (
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Pending Approvals
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {orders.filter((o) => o.status === "ordered").length}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">

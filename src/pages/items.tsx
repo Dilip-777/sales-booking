@@ -11,11 +11,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
+  const [item, setItem] = useState<Item>({
+    id: "",
+    name: "",
+    description: "",
+    category: "",
+    price: 0,
+    weight: 0,
+    unit: "",
+  });
+  const [open, setOpen] = useState(false);
 
   const fetchItems = async () => {
     const res = await axios.get("http://localhost:5000/item/getItems");
@@ -25,6 +37,21 @@ export default function Home() {
   useEffect(() => {
     fetchItems();
   }, []);
+
+  const actionColumn: ColumnDef<any> = {
+    id: "actions",
+    cell: ({ row }) => (
+      <DataTableRowActions
+        onEdit={() => {
+          setItem(row.original);
+          setOpen(true);
+        }}
+        row={row}
+      />
+    ),
+  };
+
+  const columnsWithActions = [...columns, actionColumn];
 
   return (
     <main
@@ -36,12 +63,18 @@ export default function Home() {
           <Plus size={22} className="mr-2" />
           Create Item
         </Button> */}
-        <AddItem fetchItems={fetchItems} />
+        <AddItem
+          fetchItems={fetchItems}
+          selectedItem={item}
+          setSelectItem={setItem}
+          open={open}
+          setOpen={setOpen}
+        />
       </div>
       <DataTable
         filterName="name"
         data={items}
-        columns={columns}
+        columns={columnsWithActions}
         statuses={statuses}
         priorities={priorities}
       />

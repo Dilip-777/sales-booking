@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Category from "@/components/Category";
 import Zone from "@/components/Zone";
 import Company from "@/components/Company";
-import User from "@/components/User"; 
+import User from "@/components/User";
 import { DatePickerWithRange } from "@/components/ui/date-range";
 import React from "react";
 import { addDays } from "date-fns";
@@ -12,14 +12,34 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import DeleteModal from "@/components/DeleteModal";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Master() {
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2023, 0, 20),
-    to: addDays(new Date(2023, 0, 20), 20),
+    from: new Date(),
+    to: new Date(),
   });
+  const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(
+        "http://localhost:5000/order/delete?from=" +
+          date?.from +
+          "&to=" +
+          date?.to
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
   return (
     <main
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
@@ -36,7 +56,7 @@ export default function Master() {
             Company
           </TabsTrigger>
           <TabsTrigger value="user" className="w-full">
-            User 
+            User
           </TabsTrigger>
           <TabsTrigger value="delete" className="w-full">
             Delete
@@ -51,8 +71,8 @@ export default function Master() {
         <TabsContent value="company">
           <Company />
         </TabsContent>
-        <TabsContent value = "user" className="w-full">
-          <User/>
+        <TabsContent value="user" className="w-full">
+          <User />
         </TabsContent>
         <TabsContent value="delete">
           <div className="flex flex-col gap-4 p-4">
@@ -62,13 +82,22 @@ export default function Master() {
             <div className="">
               <label className="text-md font-semibold">
                 Select a date range
-                <DatePickerWithRange />
+                <DatePickerWithRange date={date} setDate={setDate} />
               </label>
             </div>
-            <Button variant="destructive" className="w-fit">
+            <Button
+              variant="destructive"
+              className="w-fit"
+              onClick={() => setOpen(true)}
+            >
               <Trash size={16} className="mr-2" /> Delete
             </Button>
           </div>
+          <DeleteModal
+            open={open}
+            setOpen={setOpen}
+            handleDelete={handleDelete}
+          />
         </TabsContent>
       </Tabs>
     </main>

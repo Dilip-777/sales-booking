@@ -9,6 +9,7 @@ import { labels, priorities, statuses } from "./data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Company, User } from "@/types/globa";
+import moment from "moment";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -101,7 +102,24 @@ export const columns: ColumnDef<any>[] = [
       );
     },
   },
+  {
+    accessorKey: "orderDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ordered Date" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
 
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate font-medium">
+            {moment(row.getValue("createdAt")).format("DD/MM/YYYY")}
+          </span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "status",
     header: ({ column }) => (

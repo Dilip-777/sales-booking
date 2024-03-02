@@ -63,12 +63,18 @@ export default function BookOrder() {
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { orderId, approve } = router.query;
+  const { orderId, approve, approveDispatch } = router.query;
   const { data: session } = useSession();
 
   const fetchCompanies = async () => {
-    const res = await axios.get("http://localhost:5000/company/getCompanies");
-    setCompanies(res.data.companies);
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/company/getCompanies?userId=" + session?.user?.id
+      );
+      setCompanies(res.data.companies);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchOrder = async () => {
@@ -117,8 +123,11 @@ export default function BookOrder() {
     e.preventDefault();
     try {
       let status = order.status || "ordered";
-      if (approve) {
+      if (approve && session?.user?.role === "ADMIN") {
         status = "approved";
+      }
+      if (approveDispatch && session?.user?.role === "DISPATCHER") {
+        status = "completed";
       }
       setLoading(true);
       const body = {
@@ -155,7 +164,6 @@ export default function BookOrder() {
   useEffect(() => {
     const total = order.items.reduce((acc, item) => acc + item.amount, 0);
     const totalweight = order.items.reduce((acc, item) => acc + item.weight, 0);
-    console.log("total");
 
     if (order.total !== total || order.totalweight !== totalweight)
       setOrder({
@@ -164,8 +172,6 @@ export default function BookOrder() {
         totalweight,
       });
   }, [order]);
-
-  console.log(order);
 
   return (
     <main
@@ -341,7 +347,8 @@ export default function BookOrder() {
           <div className="grid grid-cols-3 gap-2"></div>
           {/* </div> */}
           <Button disabled={loading} type="submit">
-            {loading && <Spinner />} {approve ? "Approve" : "Submit"}
+            {loading && <Spinner />}{" "}
+            {approve ? "Approve" : approveDispatch ? "Dispatch" : "Submit"}
           </Button>
         </form>
       </div>
@@ -355,15 +362,6 @@ export const getServerSideProps: GetServerSideProps = async (req) => {
     return {
       redirect: {
         destination: "/signin",
-        permanent: false,
-      },
-    };
-  }
-
-  if (session.user?.role !== "SALESMAN") {
-    return {
-      redirect: {
-        destination: "/",
         permanent: false,
       },
     };

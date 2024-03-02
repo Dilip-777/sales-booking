@@ -15,6 +15,8 @@ import {
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -27,6 +29,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     password: "",
   });
   const router = useRouter();
+  const { toast } = useToast();
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -40,6 +43,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     if (res?.error) {
       setError(true);
       setMessage(res.error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please Provide Validation.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     } else {
       console.log(res);
       router.push("/");
@@ -50,7 +59,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={onSubmit}>
-        <Card>
+        <Card className="p-2">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Sign In to your account</CardTitle>
           </CardHeader>
@@ -98,15 +107,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 )}
                 Sign In
               </Button>
-              <p className=" py-3 text-center text-sm text-muted-foreground">
-                {"Don't"} have an Account?{" "}
-                <Link
-                  href="/signup"
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  SignUp
-                </Link>{" "}
-              </p>
             </div>
           </CardFooter>
         </Card>

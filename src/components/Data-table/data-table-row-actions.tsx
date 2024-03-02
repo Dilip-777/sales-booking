@@ -4,6 +4,7 @@ import {
   DeleteIcon,
   Edit,
   MoreVertical,
+  PackageCheck,
   Trash,
 } from "lucide-react";
 import { Row } from "@tanstack/react-table";
@@ -31,6 +32,7 @@ interface DataTableRowActionsProps<TData> {
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   handleApprove?: (id: string) => void;
+  handleApproveDispatch?: (id: string) => void;
 }
 
 export function DataTableRowActions<TData>({
@@ -38,6 +40,7 @@ export function DataTableRowActions<TData>({
   onEdit,
   onDelete,
   handleApprove,
+  handleApproveDispatch,
 }: DataTableRowActionsProps<TData>) {
   //   const task = taskSchema.parse(row.original);
 
@@ -56,6 +59,13 @@ export function DataTableRowActions<TData>({
         {handleApprove && (
           <DropdownMenuItem onClick={() => handleApprove(row.getValue("id"))}>
             <CheckCircle size={14} className="mr-2" /> Approve
+          </DropdownMenuItem>
+        )}
+        {handleApproveDispatch && (
+          <DropdownMenuItem
+            onClick={() => handleApproveDispatch(row.getValue("id"))}
+          >
+            <PackageCheck size={14} className="mr-2" /> Dispatch
           </DropdownMenuItem>
         )}
         <DropdownMenuItem
