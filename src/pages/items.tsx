@@ -13,6 +13,7 @@ import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
+import ImportProducts from "@/components/Items/importItems";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,13 +64,16 @@ export default function Home() {
           <Plus size={22} className="mr-2" />
           Create Item
         </Button> */}
-        <AddItem
-          fetchItems={fetchItems}
-          selectedItem={item}
-          setSelectItem={setItem}
-          open={open}
-          setOpen={setOpen}
-        />
+        <div className="flex items-center gap-4">
+          <ImportProducts fetchItems={fetchItems} />
+          <AddItem
+            fetchItems={fetchItems}
+            selectedItem={item}
+            setSelectItem={setItem}
+            open={open}
+            setOpen={setOpen}
+          />
+        </div>
       </div>
       <DataTable
         filterName="name"

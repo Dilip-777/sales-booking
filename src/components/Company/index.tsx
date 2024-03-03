@@ -6,13 +6,14 @@ import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "./columns";
 import { AddCompany } from "./addCompany";
-import { Company } from "@/types/globa";
+import { Company, Zone } from "@/types/globa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
+import ImportCustomers from "./importCustomers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,17 @@ export default function Company() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [zones, setZones] = useState<Zone[]>([]);
+  // const [open, setOpen] = useState(false);
+
+  const fetchZones = async () => {
+    const res = await axios.get("http://localhost:5000/zone/getZones");
+    setZones(res.data.zones);
+  };
+
+  useEffect(() => {
+    fetchZones();
+  }, []);
 
   const fetchCompanies = async () => {
     setLoading(true);
@@ -77,13 +89,17 @@ export default function Company() {
     >
       <div className="flex justify-between w-full">
         <h1 className="text-2xl font-semibold">Manage Company</h1>
-        <AddCompany
-          fetchCompanies={fetchCompanies}
-          selectedCompany={company}
-          setSelectedCompany={setCompany}
-          open={open}
-          setOpen={setOpen}
-        />
+        <div className="flex items-center gap-4">
+          <ImportCustomers zones={zones} />
+          <AddCompany
+            zones={zones}
+            fetchCompanies={fetchCompanies}
+            selectedCompany={company}
+            setSelectedCompany={setCompany}
+            open={open}
+            setOpen={setOpen}
+          />
+        </div>
       </div>
       <DataTable
         filterName="name"

@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { Spinner } from "../ui/Icons";
+import ImportCustomers from "./importCustomers";
 
 export function AddCompany({
   selectedCompany,
@@ -30,12 +31,14 @@ export function AddCompany({
   setSelectedCompany,
   open,
   setOpen,
+  zones,
 }: {
   selectedCompany?: Company;
   fetchCompanies: () => void;
   setSelectedCompany?: (company: Company) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  zones: Zone[];
 }) {
   const [company, setCompany] = useState({
     id: selectedCompany?.id || "",
@@ -45,17 +48,7 @@ export function AddCompany({
     status: selectedCompany?.status || "active",
   });
   const [loading, setLoading] = useState(false);
-  const [zones, setZones] = useState<Zone[]>([]);
   // const [open, setOpen] = useState(false);
-
-  const fetchZones = async () => {
-    const res = await axios.get("http://localhost:5000/zone/getZones");
-    setZones(res.data.zones);
-  };
-
-  useEffect(() => {
-    fetchZones();
-  }, []);
 
   useEffect(() => {
     setCompany({
@@ -106,10 +99,12 @@ export function AddCompany({
       }}
     >
       <DialogTrigger asChild>
-        <Button>
-          <Plus size={22} className="mr-2" />
-          Create Company
-        </Button>
+        <div className="flex items-center justify-between">
+          <Button>
+            <Plus size={22} className="mr-2" />
+            Create Company
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

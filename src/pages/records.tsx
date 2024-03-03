@@ -1,43 +1,11 @@
-"use client" 
-
 import { Inter } from "next/font/google";
-import { PauseCircle, PlayCircle, Plus } from "lucide-react";
 import { DatePickerWithRange } from "@/components/ui/date-range";
-import { Trash } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
-import { Spinner } from "../ui/Icons";
-import { CreateRecord } from "@/components/Record/createRecord";  
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
- 
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { toast } from "@/components/ui/use-toast"; 
-import * as React from "react"
+import * as React from "react";
 import {
   Select,
   SelectContent,
@@ -46,90 +14,171 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { addDays } from "date-fns";
+} from "@/components/ui/select";
+import { DateRange } from "react-day-picker";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { Item, OrderedItem } from "@/types/globa";
+import { Spinner } from "@/components/ui/Icons";
+import moment from "moment";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Record() {
   const [loading, setLoading] = useState(false);
-  const [formloading, setFormLoading] = useState(false);
-  const [itemName, setItemName] = useState("") ; 
-  const [status, setStatus] = useState(); 
+  const [itemId, setItemId] = useState("");
+  const [status, setStatus] = useState("");
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2024, 0, 20), 20),
+    from: new Date(),
+    to: new Date(),
   });
+  const [items, setItems] = useState<Item[]>([]);
 
-  const fetchRecords= async () => {
+  const fetchItems = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/item/getItems");
+      setItems(res.data.items);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(itemId, "itemId");
+
+  const { data: session } = useSession();
+
+  const fetchRecords = async () => {};
+
+  const handleSubmit = async () => {
     setLoading(true);
-    //const res = await axios.get("http://localhost:5000/user/get");
-    //setRecords(res.data.users);
+    try {
+      const fromDate = new Date(date?.from || "");
+      fromDate.setDate(fromDate.getDate() - 1);
+      const res = await axios.get(
+        "http://localhost:5000/order/getOrderItems?&from=" +
+          fromDate +
+          "&to=" +
+          date?.to +
+          "&userId=" +
+          session?.user?.id +
+          "&itemId=" +
+          itemId
+      );
+      const tableRows = [
+        [
+          "Order Id",
+          "User",
+          "Product Name",
+          "Quantity",
+          "Price",
+          "Total",
+          "Status",
+          "Order Date",
+        ],
+      ];
+
+      try {
+        res.data.items.forEach((item: OrderedItem) => {
+          if (status === "" || status === item.Order.status)
+            tableRows.push([
+              item.Order.id,
+              item.Order.user.username,
+              item.item.name,
+              item.quantity.toString(),
+              item.item.price.toString(),
+              item.amount.toString(),
+              item.Order.status,
+              moment(item.createdAt).format("DD/MM/YYYY"),
+            ]);
+        });
+
+        const csvContent = `${tableRows
+          .map((row) => row.join(","))
+          .join("\n")}`;
+
+        // Download CSV file
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "OrderItems.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   };
 
-  const handleSubmit= async ()=>{
-      alert(status); 
-  }
-
   useEffect(() => {
     fetchRecords();
-  }, []);
+    fetchItems();
+  }, [session]);
 
   return (
-      <main className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}>
+    <main
+      className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
+    >
       <div className="flex justify-between w-full">
         <h1 className="text-2xl font-semibold">Manage User</h1>
       </div>
       <div className="flex justify-between w-full">
-        <form className = "w-full" onSubmit= {handleSubmit}> 
-            <div className = "w-full text-left grid gap-y-4  gap-x-4 grid-cols-2 ">
-                <div className = "w-full">
-                  <Label htmlFor="name">Item Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Enter Category Name"
-                    required
-                    value={itemName} 
-                    onChange={ (e) => setItemName(e.target.value)} 
-                  />
-                </div>
-                <div className= "w-full"> 
-                <Label >Status </Label>
-                <Select className="w-full">
-                      <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select Status of Order" />
-                      </SelectTrigger>
-                      <SelectContent>
-                      <SelectGroup>
-                      <SelectItem value="allOrders">All Orders</SelectItem>
-                      <SelectItem value="approvedOrders">Approved Orders</SelectItem>
-                      <SelectItem value="dispatched">Dispatched </SelectItem>
-                      </SelectGroup>
-                      </SelectContent>
-                </Select>            
-                </div>
-                <div className="flex flex-col gap-4 p-4">
-                     <div className="flex justify-between w-full">
-                     <h1 className="text-2xl font-normal">View Orders</h1>
-                     </div>
-                     <div className="">
-                     <label className="text-md font-normal">
-                     Select a date range
-                     <DatePickerWithRange />
-                     </label>
-                     </div>
-                </div>
-                <div>
-                </div>
-                <div className="w-full col-span-2">
-                    <Button className="w-full flex font-semibold text-lg" > Submit </Button>
-                </div>
-            </div>
-        </form> 
+        <div className="w-full text-left grid gap-y-4  gap-x-4 grid-cols-2 ">
+          <div className="w-full lg:w-2/3">
+            <Label htmlFor="name">Item Name</Label>{" "}
+            <Select onValueChange={(value) => setItemId(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a Item" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {items.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-full lg:w-2/3">
+            <Label>Status </Label>
+            <Select value={status} onValueChange={(value) => setStatus(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="All Orders" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {/* <SelectItem value="">All Orders</SelectItem> */}
+                  <SelectItem value="ordered">
+                    Pending For Approval Orders
+                  </SelectItem>
+                  <SelectItem value="approved">Approved Orders</SelectItem>
+                  <SelectItem value="completed">Dispatched</SelectItem>
+                  <SelectItem value="canceled">Cancelled</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-2/3">
+            <Label htmlFor="name">Select Date Range</Label>
+            <DatePickerWithRange date={date} setDate={setDate} />
+          </div>
+          <div className="w-full col-span-2">
+            <Button disabled={loading} onClick={handleSubmit}>
+              {" "}
+              {loading && <Spinner />} Submit{" "}
+            </Button>
+          </div>
+        </div>
       </div>
     </main>
   );
 }
-
-
