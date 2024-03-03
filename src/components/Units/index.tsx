@@ -1,10 +1,16 @@
 import { Inter } from "next/font/google";
-import { PauseCircle, PlayCircle, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { Spinner } from "../ui/Icons";
 
-import { DataTable } from "@/components/Data-table";
-import { priorities, statuses1 } from "@/components/Data-table/data";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -14,89 +20,86 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DataTable } from "@/components/Data-table";
+import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
-import { columns } from "./column";
+import { columns } from "./columns";
+import { AddCompany } from "./addCompany";
+import { Company } from "@/types/globa";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Categories, Status } from "@/types/globa";
-import { Spinner } from "../ui/Icons";
+import { useSession } from "next-auth/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import DeleteModal from "../DeleteModal";
-
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Category() {
+export default function Units() {
   const [loading, setLoading] = useState(false);
   const [formloading, setFormLoading] = useState(false);
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [category, setCategory] = useState<Categories>({
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [unit, setUnit] = useState<any>({
     id: "",
     name: "",
-    status: "active" as Status,
+    status: "",
   });
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false) ; 
+  const [openDelete, setOpenDelete] = useState(false);
 
-  const fetchCategories = async () => {
+  const fetchUnits= async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/category/getCategories");
-    setCategories(res.data.categories);
+    const res = await axios.get(
+      "http://localhost:5000/unit/getUnits"
+    );
+    setUnit(res.data.units);
     setLoading(false);
   };
 
+  useEffect(() => {
+    fetchUnits();
+  }, []);
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      if (!category) return;
+      if (!unit) return;
       setFormLoading(true);
-      await axios.post("http://localhost:5000/category/create", {
-        ...category,
+      await axios.post("http://localhost:5000/unit/create", {
+        ...unit,
       });
       setFormLoading(false);
-      fetchCategories();
+      fetchUnits();
       setOpen(false);
-      setCategory({
+      setUnit({
         id: "",
         name: "",
         status: "active" as Status,
       });
     } catch (error) {}
   };
-  
-    const handleDelete = async () => {
+
+  const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:5000/category/delete/" + category.id);
-      fetchCategories();
+      await axios.delete("http://localhost:5000/unit/delete/" + unit.id);
+      fetchUnits();
     } catch (error) {
       console.log(error);
     }
   };
-
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const actionColumn: ColumnDef<any> = {
     id: "actions",
     cell: ({ row }) => (
       <DataTableRowActions
         onEdit={() => {
-          setCategory(row.original);
+          setUnit(row.original);
           setOpen(true);
         }}
-        onDelete={()=>{
-            setCategory(row.original); 
-            setOpenDelete(true) ; 
+        onDelete={() => {
+          setUnit(row.original);
+          setOpenDelete(true);
         }}
         row={row}
       />
@@ -107,15 +110,15 @@ export default function Category() {
 
   return (
     <main
-      className={`flex flex-col items-center gap-4 overflow-y-auto  p-4 ${inter.className}`}
+      className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
-        <h1 className="text-2xl font-semibold">Manage Category</h1>
+        <h1 className="text-2xl font-semibold">Manage Units</h1>
         <Dialog
           open={open}
           onOpenChange={(open) => {
             setOpen(open);
-            setCategory({
+            setUnit({
               id: "",
               name: "",
               status: "active" as Status,
@@ -125,26 +128,26 @@ export default function Category() {
           <DialogTrigger asChild>
             <Button>
               <Plus size={22} className="mr-2" />
-              Create Category
+              Create Unit 
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add Category</DialogTitle>
+              <DialogTitle>Add Unit</DialogTitle>
             </DialogHeader>
-            <div className="border border-border mt-0"></div>
+            <div className="border border-border "></div>
             <form onSubmit={handleSubmit}>
               <div className="grid gap-6 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Category Name</Label>
+                  <Label htmlFor="name1">Unit Name</Label>
                   <Input
-                    id="name"
-                    placeholder="Enter Category Name"
+                    id="name1"
+                    placeholder="Enter Zone Name"
                     required
-                    value={category.name}
+                    value={unit.name}
                     onChange={(e) =>
-                      setCategory({
-                        ...category,
+                      setUnit({
+                        ...unit,
                         name: e.target.value,
                       })
                     }
@@ -154,17 +157,17 @@ export default function Category() {
                   <Label htmlFor="name">Select Status</Label>
                   <Select
                     required
-                    value={category.status}
+                    value={unit.status}
                     onValueChange={(value) =>
-                      setCategory({
-                        ...category,
+                      setUnit({
+                        ...unit,
                         status: value as Status,
                       })
                     }
                   >
                     {/* <FormControl> */}
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a zone" />
+                      <SelectValue placeholder="Select a unit" />
                     </SelectTrigger>
                     {/* </FormControl> */}
                     <SelectContent>
@@ -175,7 +178,7 @@ export default function Category() {
                 </div>
               </div>
               <DialogFooter>
-                <Button disabled={formloading || !category} type="submit">
+                <Button disabled={formloading || !unit} type="submit">
                   {" "}
                   {formloading && <Spinner />} Submit
                 </Button>
@@ -186,7 +189,7 @@ export default function Category() {
       </div>
       <DataTable
         filterName="name"
-        data={categories}
+        data={unit}
         columns={columnsWithActions}
         statuses={statuses1}
         priorities={[]}
@@ -195,16 +198,14 @@ export default function Category() {
         open={openDelete}
         setOpen={(open) => {
           setOpenDelete(open);
-
-          setCategory({
+          setUnit({
             id: "",
             name: "",
-            status: "active",
+            status: "",
           });
         }}
         handleDelete={handleDelete}
       />
-
     </main>
   );
 }
