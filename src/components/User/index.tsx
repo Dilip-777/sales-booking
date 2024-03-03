@@ -9,6 +9,7 @@ import { AddUser } from "./addUser";
 import { User } from "@/types/globa";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
+import DeleteModal from "../DeleteModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function User() {
     password: "",
   });
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false) ; 
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -40,6 +42,16 @@ export default function User() {
     setUsers(res.data.users);
     setLoading(false);
   };
+
+  const handleDelete = async() =>{
+      try{
+          await axios.delete("http://localhost:5000/user/delete/" + user.id);
+          fetchUsers(); 
+      }
+      catch(error) {
+          console.log(error); 
+      } 
+  }; 
 
   useEffect(() => {
     fetchUsers();
@@ -53,8 +65,13 @@ export default function User() {
           setUser(row.original);
           setOpen(true);
         }}
+        onDelete={() =>{
+            setUser(row.original); 
+            setOpenDelete(true); 
+        }} 
         row={row}
       />
+
     ),
   };
 
@@ -81,6 +98,22 @@ export default function User() {
         statuses={statuses1}
         priorities={priorities}
       />
+      <DeleteModal
+      open={openDelete}
+      setOpen={(open) => {
+          setOpenDelete(open);
+          setUser({
+              id: "",
+              name: "",
+              email: "",
+              role: "",
+              zoneId: "",
+              password: "",
+          });
+      }}
+      handleDelete={handleDelete}
+      />
+
     </main>
   );
 }

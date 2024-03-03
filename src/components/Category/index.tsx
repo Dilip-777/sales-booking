@@ -29,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import DeleteModal from "../DeleteModal";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +44,7 @@ export default function Category() {
     status: "active" as Status,
   });
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false) ; 
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -68,6 +71,16 @@ export default function Category() {
       });
     } catch (error) {}
   };
+  
+    const handleDelete = async () => {
+    try {
+      await axios.delete("http://localhost:5000/category/delete/" + category.id);
+      fetchCategories();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   useEffect(() => {
     fetchCategories();
@@ -80,6 +93,10 @@ export default function Category() {
         onEdit={() => {
           setCategory(row.original);
           setOpen(true);
+        }}
+        onDelete={()=>{
+            setCategory(row.original); 
+            setOpenDelete(true) ; 
         }}
         row={row}
       />
@@ -174,6 +191,20 @@ export default function Category() {
         statuses={statuses1}
         priorities={[]}
       />
+      <DeleteModal
+        open={openDelete}
+        setOpen={(open) => {
+          setOpenDelete(open);
+
+          setCategory({
+            id: "",
+            name: "",
+            status: "active",
+          });
+        }}
+        handleDelete={handleDelete}
+      />
+
     </main>
   );
 }

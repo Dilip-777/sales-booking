@@ -30,6 +30,7 @@ import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
+import DeleteModal from "../DeleteModal"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default function Zone() {
     status: "active" as Status,
   });
   const [open, setOpen] = useState(false);
+  const [openDelete , setOpenDelete] = useState(false) ; 
 
   const fetchZones = async () => {
     setLoading(true);
@@ -70,6 +72,15 @@ export default function Zone() {
     } catch (error) {}
   };
 
+  const handleDelete = async() => {
+      try{
+          await axios.delete("http://localhost:5000/zone/delete/"+zone.id) 
+              fetchZones(); 
+      }catch (error){
+          console.log(error); 
+      } 
+  }; 
+
   useEffect(() => {
     fetchZones();
   }, []);
@@ -82,6 +93,10 @@ export default function Zone() {
           setZone(row.original);
           setOpen(true);
         }}
+        onDelete={() =>{
+            setZone(row.original); 
+            setOpenDelete(true); 
+        }} 
         row={row}
       />
     ),
@@ -174,6 +189,18 @@ export default function Zone() {
         columns={columnsWithActions}
         statuses={statuses1}
         priorities={priorities}
+      />
+      <DeleteModal
+        open={openDelete}
+        setOpen={(open) => {
+            setOpenDelete(open);
+            setZone({
+                id: "",
+                name: "",
+                status: "active" as Status,
+            });
+        }}
+        handleDelete={handleDelete}
       />
     </main>
   );
