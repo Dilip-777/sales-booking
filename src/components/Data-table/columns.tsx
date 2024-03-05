@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { labels, priorities, statuses } from "./data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Company, User } from "@/types/globa";
+import { Customer, User } from "@/types/globa";
 import moment from "moment";
 
 export const columns: ColumnDef<any>[] = [
@@ -43,14 +43,14 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Order Id" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => row.getValue("id"),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "company",
+    accessorKey: "customer",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Company" />
+      <DataTableColumnHeader column={column} title="Customer" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -59,7 +59,7 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {(row.getValue("company") as Company).name}
+            {(row.getValue("customer") as Customer).name}
           </span>
         </div>
       );

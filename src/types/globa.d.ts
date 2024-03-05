@@ -28,7 +28,7 @@ export interface Unit {
   status: Status;
 }
 
-export interface Company {
+export interface Customer {
   id: string;
   name: string;
   address: string;
@@ -49,7 +49,7 @@ export interface Zone {
   name: string;
   status: Status;
   users?: User[];
-  companies?: Company[];
+  customers?: Customer[];
 }
 
 export interface OrderedItem {
@@ -58,6 +58,7 @@ export interface OrderedItem {
   itemId: string;
   quantity: number;
   amount: number;
+  dispatchedQty: number;
   createdAt: Date;
   updatedAt: Date;
   item: Item;
@@ -67,15 +68,18 @@ export interface OrderedItem {
 export interface Order {
   id: string;
   userId: string;
-  companyId: string;
+  customerId: string;
   total: number;
   requiredBy: Date;
   status: OrderStatus;
+  remarks: string | null;
+  vehicleno: string | null;
+  issueAmount: number;
   createdAt: Date;
   updatedAt: Date;
   items?: OrderedItem[];
   user: User;
-  company: Company;
+  customer: Customer;
 }
 
 export enum Status {
@@ -92,6 +96,7 @@ export enum OrderStatus {
 
 export enum Role {
   SALESMAN = "SALESMAN",
-  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
   DISPATCHER = "DISPATCHER",
+  SUPPORT = "SUPPORT",
 }

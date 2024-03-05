@@ -12,19 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
+  const { data: session } = useSession();
   return (
     <header className="sticky top-0 z-10 bg-white p-4 shadow-md flex justify-between flex-row-reverse items-center w-full h-20 backdrop-blur-sm">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-4">
-          <span className="text-sm">Welcome, John Doe</span>
+          <span className="text-sm">Welcome, {session?.user?.username}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
                 <AvatarImage src="" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>
+                  {session?.user?.username.toUpperCase().slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">

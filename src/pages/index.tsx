@@ -10,13 +10,14 @@ import {
 import { DataTable } from "@/components/Data-table";
 import { data, priorities, statuses } from "@/components/Data-table/data";
 import { columns } from "@/components/Data-table/columns";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Order } from "@/types/globa";
 import axios from "axios";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,7 +43,7 @@ export default function Home() {
       <DataTableRowActions
         onEdit={(id) => router.push("/book-order?orderId=" + id)}
         handleApprove={
-          session?.user?.role === "ADMIN"
+          session?.user?.role === "MANAGER"
             ? (id) => router.push("/book-order?orderId=" + id + "&approve=true")
             : undefined
         }
@@ -55,7 +56,7 @@ export default function Home() {
             : undefined
         }
         // handleDispatch={
-        //   session?.user?.role === "ADMIN"
+        //   session?.user?.role === "MANAGER"
         //     ? (id) => router.push("/book-order?orderId=" + id + "&dispatch=true")
         //     : undefined
         // }
@@ -74,7 +75,7 @@ export default function Home() {
     >
       {session?.user?.role !== "SALESMAN" && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full">
-          {session?.user?.role === "ADMIN" && (
+          {session?.user?.role === "MANAGER" && (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -110,7 +111,7 @@ export default function Home() {
         filterName="name"
         data={orders}
         columns={columnsWithActions.filter(
-          (column) => column.id !== "user" || session?.user?.role === "ADMIN"
+          (column) => column.id !== "user" || session?.user?.role === "MANAGER"
         )}
         statuses={statuses}
         priorities={priorities}
@@ -118,3 +119,28 @@ export default function Home() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (req) => {
+  const session = await getSession(req);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  if (session.user?.role === "SUPPORT") {
+    return {
+      redirect: {
+        destination: "/users",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

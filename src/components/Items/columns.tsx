@@ -38,7 +38,11 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <span className="max-w-[500px] truncate font-medium">
+        {row.getValue("name")}
+      </span>
+    ),
     enableSorting: false,
     enableHiding: false,
   },
@@ -141,8 +145,4 @@ export const columns: ColumnDef<any>[] = [
   //       return value.includes(row.getValue(id));
   //     },
   //   },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
 ];

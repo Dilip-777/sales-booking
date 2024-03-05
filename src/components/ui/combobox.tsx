@@ -22,10 +22,12 @@ export function Combobox({
   options,
   value,
   onChange,
+  placeholder,
 }: {
   value: string;
   options: { label: string; value: string }[];
   onChange: (value: string) => void;
+  placeholder?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   //   const [value, setValue] = React.useState("");
@@ -37,15 +39,16 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[350px] justify-between"
+          className="w-full justify-between"
         >
           {value
-            ? options.find((options) => options.value === value)?.label
-            : "Select Items..."}
+            ? options.find((options) => options.value.toLowerCase() === value)
+                ?.label
+            : placeholder || "Select an option"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search options..." />
           <CommandEmpty>No options found.</CommandEmpty>

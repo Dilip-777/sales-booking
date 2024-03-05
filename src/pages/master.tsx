@@ -2,9 +2,9 @@ import { Inter } from "next/font/google";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Category from "@/components/Category";
 import Zone from "@/components/Zone";
-import Company from "@/components/Company";
+import Customer from "@/components/Customer";
 import User from "@/components/User";
-import Units from "@/components/Units"; 
+import Units from "@/components/Units";
 import { DatePickerWithRange } from "@/components/ui/date-range";
 import React from "react";
 import { addDays } from "date-fns";
@@ -46,21 +46,18 @@ export default function Master() {
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <Tabs defaultValue="category" className="w-full">
-        <TabsList className="w-1/2">
+        <TabsList className="w-full lg:w-2/3">
           <TabsTrigger value="category" className="w-full">
             Category
           </TabsTrigger>
           <TabsTrigger value="zone" className="w-full">
             Zone
           </TabsTrigger>
-          <TabsTrigger value="company" className="w-full">
-            Company
-          </TabsTrigger>
-          <TabsTrigger value="user" className="w-full">
-            User
+          <TabsTrigger value="customer" className="w-full">
+            Customer
           </TabsTrigger>
           <TabsTrigger value="units" className="w-full">
-            Units 
+            Units
           </TabsTrigger>
           <TabsTrigger value="delete" className="w-full">
             Delete
@@ -72,14 +69,11 @@ export default function Master() {
         <TabsContent value="zone">
           <Zone />
         </TabsContent>
-        <TabsContent value="company">
-          <Company />
-        </TabsContent>
-        <TabsContent value="user" className="w-full">
-          <User />
+        <TabsContent value="customer">
+          <Customer />
         </TabsContent>
         <TabsContent value="units" className="w-full">
-          <Units/>
+          <Units />
         </TabsContent>
         <TabsContent value="delete">
           <div className="flex flex-col gap-4 p-4">
@@ -122,7 +116,7 @@ export const getServerSideProps: GetServerSideProps = async (req) => {
     };
   }
 
-  if (session.user?.role !== "ADMIN") {
+  if (session.user?.role !== "MANAGER") {
     return {
       redirect: {
         destination: "/",

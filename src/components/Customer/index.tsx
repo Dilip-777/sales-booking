@@ -5,8 +5,8 @@ import { DataTable } from "@/components/Data-table";
 import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "./columns";
-import { AddCompany } from "./addCompany";
-import { Company, Zone } from "@/types/globa";
+import { AddCustomer } from "./addCustomer";
+import { Customer, Zone } from "@/types/globa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -17,10 +17,10 @@ import ImportCustomers from "./importCustomers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Company() {
+export default function Customer() {
   const [loading, setLoading] = useState(false);
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [company, setCompany] = useState<any>({
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customer, setCustomer] = useState<any>({
     id: "",
     name: "",
     address: "",
@@ -42,23 +42,30 @@ export default function Company() {
     fetchZones();
   }, []);
 
-  const fetchCompanies = async () => {
+  const fetchCustomers = async () => {
     setLoading(true);
-    const res = await axios.get(
-      "http://localhost:5000/company/getCompanies?userId=" + session?.user?.id
-    );
-    setCompanies(res.data.companies);
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/customer/getCustomers?userId=" +
+          session?.user?.id
+      );
+      setCustomers(res.data.customers);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCompanies();
+    fetchCustomers();
   }, []);
 
   const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:5000/company/delete/" + company.id);
-      fetchCompanies();
+      await axios.delete(
+        "http://localhost:5000/customer/delete/" + customer.id
+      );
+      fetchCustomers();
     } catch (error) {
       console.log(error);
     }
@@ -69,11 +76,11 @@ export default function Company() {
     cell: ({ row }) => (
       <DataTableRowActions
         onEdit={() => {
-          setCompany(row.original);
+          setCustomer(row.original);
           setOpen(true);
         }}
         onDelete={() => {
-          setCompany(row.original);
+          setCustomer(row.original);
           setOpenDelete(true);
         }}
         row={row}
@@ -88,14 +95,14 @@ export default function Company() {
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
-        <h1 className="text-2xl font-semibold">Manage Company</h1>
+        <h1 className="text-2xl font-semibold">Manage Customer</h1>
         <div className="flex items-center gap-4">
           <ImportCustomers zones={zones} />
-          <AddCompany
+          <AddCustomer
             zones={zones}
-            fetchCompanies={fetchCompanies}
-            selectedCompany={company}
-            setSelectedCompany={setCompany}
+            fetchCustomers={fetchCustomers}
+            selectedCustomer={customer}
+            setSelectedCustomer={setCustomer}
             open={open}
             setOpen={setOpen}
           />
@@ -103,7 +110,7 @@ export default function Company() {
       </div>
       <DataTable
         filterName="name"
-        data={companies}
+        data={customers}
         columns={columnsWithActions}
         statuses={statuses1}
         priorities={[]}
@@ -113,7 +120,7 @@ export default function Company() {
         setOpen={(open) => {
           setOpenDelete(open);
 
-          setCompany({
+          setCustomer({
             id: "",
             name: "",
             address: "",
@@ -121,7 +128,7 @@ export default function Company() {
             status: "active",
           });
         }}
-        // fetch={fetchCompanies}
+        // fetch={fetchCustomers}
         handleDelete={handleDelete}
       />
     </main>

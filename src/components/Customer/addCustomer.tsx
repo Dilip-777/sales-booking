@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Company, Zone } from "@/types/globa";
+import { Customer, Zone } from "@/types/globa";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -25,58 +25,58 @@ import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import ImportCustomers from "./importCustomers";
 
-export function AddCompany({
-  selectedCompany,
-  fetchCompanies,
-  setSelectedCompany,
+export function AddCustomer({
+  selectedCustomer,
+  fetchCustomers,
+  setSelectedCustomer,
   open,
   setOpen,
   zones,
 }: {
-  selectedCompany?: Company;
-  fetchCompanies: () => void;
-  setSelectedCompany?: (company: Company) => void;
+  selectedCustomer?: Customer;
+  fetchCustomers: () => void;
+  setSelectedCustomer?: (customer: Customer) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
   zones: Zone[];
 }) {
-  const [company, setCompany] = useState({
-    id: selectedCompany?.id || "",
-    name: selectedCompany?.name || "",
-    zoneId: selectedCompany?.zoneId || "",
-    address: selectedCompany?.address || "",
-    status: selectedCompany?.status || "active",
+  const [customer, setCustomer] = useState({
+    id: selectedCustomer?.id || "",
+    name: selectedCustomer?.name || "",
+    zoneId: selectedCustomer?.zoneId || "",
+    address: selectedCustomer?.address || "",
+    status: selectedCustomer?.status || "active",
   });
   const [loading, setLoading] = useState(false);
   // const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setCompany({
-      id: selectedCompany?.id || "",
-      name: selectedCompany?.name || "",
-      zoneId: selectedCompany?.zoneId || "",
-      address: selectedCompany?.address || "",
-      status: selectedCompany?.status || "active",
+    setCustomer({
+      id: selectedCustomer?.id || "",
+      name: selectedCustomer?.name || "",
+      zoneId: selectedCustomer?.zoneId || "",
+      address: selectedCustomer?.address || "",
+      status: selectedCustomer?.status || "active",
     });
-  }, [selectedCompany]);
+  }, [selectedCustomer]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:5000/company/create",
-        company
+        "http://localhost:5000/customer/create",
+        customer
       );
       setOpen(false);
-      setCompany({
+      setCustomer({
         id: "",
         name: "",
         zoneId: "",
         address: "",
         status: "active",
       });
-      fetchCompanies();
+      fetchCustomers();
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -89,7 +89,7 @@ export function AddCompany({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        setCompany({
+        setCustomer({
           id: "",
           name: "",
           zoneId: "",
@@ -102,29 +102,29 @@ export function AddCompany({
         <div className="flex items-center justify-between">
           <Button>
             <Plus size={22} className="mr-2" />
-            Create Company
+            Create Customer
           </Button>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {selectedCompany?.id ? "Edit" : "Add"} Company
+            {selectedCustomer?.id ? "Edit" : "Add"} Customer
           </DialogTitle>
         </DialogHeader>
         <div className="border border-border mt-0"></div>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-6 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Company Name</Label>
+              <Label htmlFor="name">Customer Name</Label>
               <Input
                 id="name"
-                placeholder="Enter Company Name"
+                placeholder="Enter Customer Name"
                 required
-                value={company.name}
+                value={customer.name}
                 onChange={(e) =>
-                  setCompany({
-                    ...company,
+                  setCustomer({
+                    ...customer,
                     name: e.target.value,
                   })
                 }
@@ -134,10 +134,10 @@ export function AddCompany({
               <Label htmlFor="name">Select a Zone</Label>
               <Select
                 required
-                value={company.zoneId}
+                value={customer.zoneId}
                 onValueChange={(value) =>
-                  setCompany({
-                    ...company,
+                  setCustomer({
+                    ...customer,
                     zoneId: value,
                   })
                 }
@@ -163,10 +163,10 @@ export function AddCompany({
               <Label htmlFor="name">Select Status</Label>
               <Select
                 required
-                value={company.status}
+                value={customer.status}
                 onValueChange={(value) =>
-                  setCompany({
-                    ...company,
+                  setCustomer({
+                    ...customer,
                     status: value,
                   })
                 }
@@ -183,13 +183,13 @@ export function AddCompany({
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="address">Company Address</Label>
+              <Label htmlFor="address">Customer Address</Label>
               <Textarea
                 required
-                value={company.address}
+                value={customer.address}
                 onChange={(e) =>
-                  setCompany({
-                    ...company,
+                  setCustomer({
+                    ...customer,
                     address: e.target.value,
                   })
                 }

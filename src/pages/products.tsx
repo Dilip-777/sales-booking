@@ -59,7 +59,7 @@ export default function Home() {
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
     >
       <div className="flex justify-between w-full">
-        <h1 className="text-2xl font-semibold">Manage Items</h1>
+        <h1 className="text-2xl font-semibold">Manage Products</h1>
         {/* <Button>
           <Plus size={22} className="mr-2" />
           Create Item
@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = async (req) => {
     };
   }
 
-  if (session.user?.role !== "ADMIN") {
+  if (session.user?.role !== "MANAGER") {
     return {
       redirect: {
         destination: "/",

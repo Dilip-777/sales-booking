@@ -38,9 +38,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("username")}</div>
-    ),
+    cell: ({ row }) => row.getValue("username"),
     enableSorting: false,
     enableHiding: false,
   },
@@ -49,7 +47,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("email")}</div>,
+    cell: ({ row }) => row.getValue("email"),
     enableSorting: false,
   },
   {
@@ -57,7 +55,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Role" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("role")}</div>,
+    cell: ({ row }) => row.getValue("role"),
     enableSorting: false,
   },
   {

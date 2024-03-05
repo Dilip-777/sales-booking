@@ -79,7 +79,7 @@ export const priorities = [
   },
 ];
 
-export const role = [ "ADMIN" , "DISPATCHER", "SALESMAN"];  
+export const role = ["MANAGER", "DISPATCHER", "SALESMAN", "SUPPORT"];
 
 export const data = [
   {

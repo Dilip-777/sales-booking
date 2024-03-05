@@ -50,8 +50,8 @@ const adminItems: NavItem[] = [
     variant: "default",
   },
   {
-    title: "Items",
-    href: "/items",
+    title: "Products",
+    href: "/products",
     icon: Box,
     variant: "ghost",
   },
@@ -83,16 +83,33 @@ const dispatcherItems: NavItem[] = [
     icon: LayoutDashboard,
     variant: "default",
   },
+  {
+    title: "Record",
+    href: "/records",
+    icon: FileDown,
+    variant: "ghost",
+  },
+];
+
+const supportItems: NavItem[] = [
+  {
+    title: "Users",
+    href: "/users",
+    icon: UsersRound,
+    variant: "ghost",
+  },
 ];
 
 export const getNavItems = (role: string) => {
   switch (role) {
     case "SALESMAN":
       return salesmanItems;
-    case "ADMIN":
+    case "MANAGER":
       return adminItems;
     case "DISPATCHER":
       return dispatcherItems;
+    case "SUPPORT":
+      return supportItems;
     default:
       return [];
   }

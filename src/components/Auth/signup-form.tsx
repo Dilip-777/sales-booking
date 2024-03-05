@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -24,13 +25,14 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     password: "",
     confirmpassword: "",
   });
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
     try {
       const res = await axios.post("http://localhost:5000/auth/register", user);
-      console.log(res.data);
+      router.push("/signin");
     } catch (error) {
       console.error(error);
     }

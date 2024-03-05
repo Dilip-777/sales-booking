@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Categories, Company, Item, Unit, Zone } from "@/types/globa";
+import { Categories, Item, Unit } from "@/types/globa";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -120,21 +120,21 @@ export function AddItem({
       <DialogTrigger asChild>
         <Button>
           <Plus size={22} className="mr-2" />
-          Create Item
+          Create Product
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{selectedItem ? "Edit" : "Add"} Item</DialogTitle>
+          <DialogTitle>{selectedItem ? "Edit" : "Add"} Product</DialogTitle>
         </DialogHeader>
         <div className="border border-border mt-0"></div>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-6 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Item Name</Label>
+              <Label htmlFor="name">Product Name</Label>
               <Input
                 id="name"
-                placeholder="Enter Item Name"
+                placeholder="Enter Product Name"
                 required
                 value={item.name}
                 onChange={(e) =>
@@ -172,10 +172,10 @@ export function AddItem({
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="weight">Item Weight</Label>
+              <Label htmlFor="weight">Product Weight</Label>
               <Input
                 id="weight"
-                placeholder="Enter Item Weight"
+                placeholder="Enter Product Weight"
                 required
                 type="number"
                 value={item.weight}
@@ -214,10 +214,10 @@ export function AddItem({
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="price">Item Price</Label>
+              <Label htmlFor="price">Product Price</Label>
               <Input
                 id="price"
-                placeholder="Enter Item price"
+                placeholder="Enter Product price"
                 required
                 type="number"
                 value={item.price}
@@ -230,9 +230,9 @@ export function AddItem({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">Item Description</Label>
+              <Label htmlFor="description">Product Description</Label>
               <Textarea
-                placeholder="Enter Item Description"
+                placeholder="Enter Product Description"
                 value={item.description}
                 onChange={(e) =>
                   setItem({

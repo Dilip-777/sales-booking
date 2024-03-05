@@ -25,7 +25,6 @@ function ImportCustomers({ zones }: { zones: Zone[] }) {
         const worksheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[worksheetName];
         const data = XLSX.utils.sheet_to_json(worksheet);
-        console.log(data);
         importing(data);
       };
       setKey(key + 1);
@@ -96,8 +95,8 @@ function ImportCustomers({ zones }: { zones: Zone[] }) {
     }
     setLoading(true);
     await axios
-      .post("http://localhost:5000/company/createMany", {
-        companies: body,
+      .post("http://localhost:5000/customer/createMany", {
+        customers: body,
       })
       .then((res) => {
         setError(false);

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Company, User, Zone } from "@/types/globa";
+import { Zone } from "@/types/globa";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import { role } from "../Data-table/data";

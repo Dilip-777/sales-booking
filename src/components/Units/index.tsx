@@ -24,14 +24,13 @@ import { DataTable } from "@/components/Data-table";
 import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "./columns";
-import { AddCompany } from "./addCompany";
-import { Company } from "@/types/globa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
+import { Status, Unit } from "@/types/globa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,19 +47,17 @@ export default function Units() {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  const fetchUnits= async () => {
+  const fetchUnits = async () => {
     setLoading(true);
-    const res = await axios.get(
-      "http://localhost:5000/unit/getUnits"
-    );
-    setUnit(res.data.units);
+    const res = await axios.get("http://localhost:5000/unit/getUnits");
+    setUnits(res.data.units);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchUnits();
   }, []);
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -128,7 +125,7 @@ export default function Units() {
           <DialogTrigger asChild>
             <Button>
               <Plus size={22} className="mr-2" />
-              Create Unit 
+              Create Unit
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -189,7 +186,7 @@ export default function Units() {
       </div>
       <DataTable
         filterName="name"
-        data={unit}
+        data={units}
         columns={columnsWithActions}
         statuses={statuses1}
         priorities={[]}

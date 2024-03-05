@@ -88,7 +88,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </CardContent>
           <CardFooter>
             <div className="w-full">
-              <Button disabled={isLoading} className="w-full">
+              <Button disabled={isLoading} className="w-full" variant="primary">
                 {isLoading && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

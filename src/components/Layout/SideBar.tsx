@@ -3,15 +3,7 @@ import { Nav } from "../ui/nav";
 
 type Props = {};
 
-import {
-  ShoppingCart,
-  LayoutDashboard,
-  UsersRound,
-  Settings,
-  FileDown,
-  ChevronLeft,
-  Box,
-} from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -58,7 +50,12 @@ export default function SideNavbar({}: Props) {
           <ChevronLeft />
         </Button>
       </div>
-      <p className="text-md font-bold px-3 leading-7">Logo</p>
+      <div className="flex items-center  w-full  ">
+        <img src="/logo.jpeg" alt="logo" className="h-12 w-11" />
+        {!isCollapsed && (
+          <p className="text-md font-bold px-3 leading-7">Logo</p>
+        )}
+      </div>
       <Nav
         isCollapsed={isCollapsed}
         links={getNavItems(session?.user?.role || "")}

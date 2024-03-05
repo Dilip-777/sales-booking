@@ -40,7 +40,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("name")}</div>,
+    cell: ({ row }) => row.getValue("name"),
     enableSorting: false,
     enableHiding: false,
   },
@@ -49,10 +49,11 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("status")}</div>,
+    cell: ({ row }) => {
+      row.getValue("status");
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
   },
 ];
-
