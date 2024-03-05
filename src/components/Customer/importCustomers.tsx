@@ -6,6 +6,7 @@ import { Spinner } from "../ui/Icons";
 import { Import } from "lucide-react";
 import { Label } from "../ui/label";
 import { toast } from "../ui/use-toast";
+import { api } from "@/Api";
 
 function ImportCustomers({ zones }: { zones: Zone[] }) {
   const [error, setError] = useState(false);
@@ -94,8 +95,8 @@ function ImportCustomers({ zones }: { zones: Zone[] }) {
       return;
     }
     setLoading(true);
-    await axios
-      .post("http://localhost:5000/customer/createMany", {
+    await api
+      .post("/customer/createMany", {
         customers: body,
       })
       .then((res) => {

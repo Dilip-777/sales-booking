@@ -10,6 +10,7 @@ import { User } from "@/types/globa";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,24 +35,23 @@ export default function User() {
     password: "",
   });
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false) ; 
+  const [openDelete, setOpenDelete] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/user/get");
+    const res = await api.get("/user/get");
     setUsers(res.data.users);
     setLoading(false);
   };
 
-  const handleDelete = async() =>{
-      try{
-          await axios.delete("http://localhost:5000/user/delete/" + user.id);
-          fetchUsers(); 
-      }
-      catch(error) {
-          console.log(error); 
-      } 
-  }; 
+  const handleDelete = async () => {
+    try {
+      await api.delete("/user/delete/" + user.id);
+      fetchUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -65,13 +65,12 @@ export default function User() {
           setUser(row.original);
           setOpen(true);
         }}
-        onDelete={() =>{
-            setUser(row.original); 
-            setOpenDelete(true); 
-        }} 
+        onDelete={() => {
+          setUser(row.original);
+          setOpenDelete(true);
+        }}
         row={row}
       />
-
     ),
   };
 
@@ -99,21 +98,20 @@ export default function User() {
         priorities={priorities}
       />
       <DeleteModal
-      open={openDelete}
-      setOpen={(open) => {
+        open={openDelete}
+        setOpen={(open) => {
           setOpenDelete(open);
           setUser({
-              id: "",
-              name: "",
-              email: "",
-              role: "",
-              zoneId: "",
-              password: "",
+            id: "",
+            name: "",
+            email: "",
+            role: "",
+            zoneId: "",
+            password: "",
           });
-      }}
-      handleDelete={handleDelete}
+        }}
+        handleDelete={handleDelete}
       />
-
     </main>
   );
 }

@@ -16,11 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DateRange } from "react-day-picker";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Item, OrderedItem } from "@/types/globa";
 import { Spinner } from "@/components/ui/Icons";
 import moment from "moment";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,7 +36,7 @@ export default function Record() {
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/item/getItems");
+      const res = await api.get("/item/getItems");
       setItems(res.data.items);
     } catch (error) {
       console.log(error);
@@ -54,8 +54,8 @@ export default function Record() {
     try {
       const fromDate = new Date(date?.from || "");
       fromDate.setDate(fromDate.getDate() - 1);
-      const res = await axios.get(
-        "http://localhost:5000/order/getOrderItems?&from=" +
+      const res = await api.get(
+        "/order/getOrderItems?&from=" +
           fromDate +
           "&to=" +
           date?.to +

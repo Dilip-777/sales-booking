@@ -23,6 +23,7 @@ import {
 import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import { role } from "../Data-table/data";
+import { api } from "@/Api";
 
 export function AddUser({
   selectedUser,
@@ -49,8 +50,12 @@ export function AddUser({
   const [zones, setZones] = useState<Zone[]>([]);
 
   const fetchZones = async () => {
-    const res = await axios.get("http://localhost:5000/zone/getZones");
-    setZones(res.data.zones);
+    try {
+      const res = await api.get("/zone/getZones");
+      setZones(res.data.zones);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export function AddUser({
     try {
       e.preventDefault();
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/auth/register", user);
+      const res = await api.post("/auth/register", user);
       setOpen(false);
       setUser({
         id: "",
@@ -153,7 +158,6 @@ export function AddUser({
             <div className="grid gap-2">
               <Label htmlFor="name">Zone</Label>
               <Select
-                required
                 value={user.zoneId}
                 onValueChange={(value) =>
                   setUser({

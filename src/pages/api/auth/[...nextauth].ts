@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "@/Api";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -35,9 +36,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         try {
-          console.log(credentials);
-
-          const res = await fetch("http://localhost:5000/auth/login", {
+          const res = await fetch(BACKEND_URL + "/auth/login", {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" },
@@ -46,13 +45,17 @@ export const authOptions: NextAuthOptions = {
           const data = await res.json();
 
           if (data.user) {
-            console.log(data.user);
+            console.log(data.user, "slkdfjsk");
 
             return data.user;
           } else {
+            console.log("error", data);
+
             return null;
           }
         } catch (error) {
+          console.log(error, "error");
+
           return null;
         }
       },

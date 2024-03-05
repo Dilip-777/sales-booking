@@ -14,6 +14,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import ImportCustomers from "./importCustomers";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +35,7 @@ export default function Customer() {
   // const [open, setOpen] = useState(false);
 
   const fetchZones = async () => {
-    const res = await axios.get("http://localhost:5000/zone/getZones");
+    const res = await api.get("/zone/getZones");
     setZones(res.data.zones);
   };
 
@@ -45,9 +46,8 @@ export default function Customer() {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        "http://localhost:5000/customer/getCustomers?userId=" +
-          session?.user?.id
+      const res = await api.get(
+        "/customer/getCustomers?userId=" + session?.user?.id
       );
       setCustomers(res.data.customers);
     } catch (error) {
@@ -62,9 +62,7 @@ export default function Customer() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        "http://localhost:5000/customer/delete/" + customer.id
-      );
+      await api.delete("/customer/delete/" + customer.id);
       fetchCustomers();
     } catch (error) {
       console.log(error);

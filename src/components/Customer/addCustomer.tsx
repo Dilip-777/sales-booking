@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import ImportCustomers from "./importCustomers";
+import { api } from "@/Api";
 
 export function AddCustomer({
   selectedCustomer,
@@ -64,10 +65,7 @@ export function AddCustomer({
     try {
       e.preventDefault();
       setLoading(true);
-      const res = await axios.post(
-        "http://localhost:5000/customer/create",
-        customer
-      );
+      const res = await api.post("/customer/create", customer);
       setOpen(false);
       setCustomer({
         id: "",

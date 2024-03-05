@@ -18,6 +18,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,10 +28,12 @@ export default function Home() {
   const router = useRouter();
 
   const fetchOrders = async () => {
-    const res = await axios.get(
-      "http://localhost:5000/order/getOrders?userId=" + session?.user?.id
-    );
-    setOrders(res.data.orders);
+    try {
+      const res = await api.get("/order/getOrders?userId=" + session?.user?.id);
+      setOrders(res.data.orders);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

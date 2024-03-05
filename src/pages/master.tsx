@@ -15,6 +15,7 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import DeleteModal from "@/components/DeleteModal";
 import axios from "axios";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,12 +30,7 @@ export default function Master() {
   const handleDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        "http://localhost:5000/order/delete?from=" +
-          date?.from +
-          "&to=" +
-          date?.to
-      );
+      await api.delete("/order/delete?from=" + date?.from + "&to=" + date?.to);
     } catch (error) {
       console.log(error);
     }

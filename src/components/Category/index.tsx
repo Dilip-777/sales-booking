@@ -17,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { columns } from "./column";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Categories, Status } from "@/types/globa";
 import { Spinner } from "../ui/Icons";
 import { ColumnDef } from "@tanstack/react-table";
@@ -30,6 +29,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import DeleteModal from "../DeleteModal";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,7 +47,7 @@ export default function Category() {
 
   const fetchCategories = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/category/getCategories");
+    const res = await api.get("/category/getCategories");
     setCategories(res.data.categories);
     setLoading(false);
   };
@@ -57,7 +57,7 @@ export default function Category() {
       e.preventDefault();
       if (!category) return;
       setFormLoading(true);
-      await axios.post("http://localhost:5000/category/create", {
+      await api.post("/category/create", {
         ...category,
       });
       setFormLoading(false);
@@ -73,9 +73,7 @@ export default function Category() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        "http://localhost:5000/category/delete/" + category.id
-      );
+      await api.delete("/category/delete/" + category.id);
       fetchCategories();
     } catch (error) {
       console.log(error);

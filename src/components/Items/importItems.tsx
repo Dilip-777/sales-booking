@@ -6,6 +6,7 @@ import { Spinner } from "../ui/Icons";
 import { Import } from "lucide-react";
 import { Label } from "../ui/label";
 import { toast } from "../ui/use-toast";
+import { api } from "@/Api";
 
 function ImportProducts({ fetchItems }: { fetchItems: () => void }) {
   const [error, setError] = useState(false);
@@ -94,8 +95,8 @@ function ImportProducts({ fetchItems }: { fetchItems: () => void }) {
       return;
     }
     setLoading(true);
-    await axios
-      .post("http://localhost:5000/item/createMany", {
+    await api
+      .post("/item/createMany", {
         items: body,
       })
       .then((res) => {

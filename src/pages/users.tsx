@@ -13,6 +13,7 @@ import DeleteModal from "@/components/DeleteModal";
 import { LoadingSpinner } from "@/components/ui/Icons";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,14 +33,18 @@ export default function Users() {
 
   const fetchUsers = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/user/get");
-    setUsers(res.data.users);
+    try {
+      const res = await api.get("/user/get");
+      setUsers(res.data.users);
+    } catch (error) {
+      console.log(error);
+    }
     setLoading(false);
   };
 
   const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:5000/user/delete/" + user.id);
+      await api.delete("/user/delete/" + user.id);
       fetchUsers();
     } catch (error) {
       console.log(error);

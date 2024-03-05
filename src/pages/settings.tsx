@@ -36,6 +36,7 @@ import {
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { User } from "next-auth";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,10 +56,7 @@ export default function Account({ user }: { user: User }) {
   };
   const updateUser = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/auth/register",
-        userData
-      );
+      const res = await api.post("/auth/register", userData);
       alert(res.status);
     } catch (error) {
       console.log(error);

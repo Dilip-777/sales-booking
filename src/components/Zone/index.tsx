@@ -26,11 +26,11 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { columns } from "./columns";
-import axios from "axios";
 import { Spinner } from "../ui/Icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
-import DeleteModal from "../DeleteModal"; 
+import DeleteModal from "../DeleteModal";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,11 +44,11 @@ export default function Zone() {
     status: "active" as Status,
   });
   const [open, setOpen] = useState(false);
-  const [openDelete , setOpenDelete] = useState(false) ; 
+  const [openDelete, setOpenDelete] = useState(false);
 
   const fetchZones = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/zone/getZones");
+    const res = await api.get("/zone/getZones");
     setZones(res.data.zones);
     setLoading(false);
   };
@@ -58,7 +58,7 @@ export default function Zone() {
       e.preventDefault();
       if (!zone) return;
       setFormLoading(true);
-      await axios.post("http://localhost:5000/zone/create", {
+      await api.post("/zone/create", {
         ...zone,
       });
       setFormLoading(false);
@@ -72,14 +72,14 @@ export default function Zone() {
     } catch (error) {}
   };
 
-  const handleDelete = async() => {
-      try{
-          await axios.delete("http://localhost:5000/zone/delete/"+zone.id) 
-              fetchZones(); 
-      }catch (error){
-          console.log(error); 
-      } 
-  }; 
+  const handleDelete = async () => {
+    try {
+      await api.delete("/zone/delete/" + zone.id);
+      fetchZones();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchZones();
@@ -93,10 +93,10 @@ export default function Zone() {
           setZone(row.original);
           setOpen(true);
         }}
-        onDelete={() =>{
-            setZone(row.original); 
-            setOpenDelete(true); 
-        }} 
+        onDelete={() => {
+          setZone(row.original);
+          setOpenDelete(true);
+        }}
         row={row}
       />
     ),
@@ -193,12 +193,12 @@ export default function Zone() {
       <DeleteModal
         open={openDelete}
         setOpen={(open) => {
-            setOpenDelete(open);
-            setZone({
-                id: "",
-                name: "",
-                status: "active" as Status,
-            });
+          setOpenDelete(open);
+          setZone({
+            id: "",
+            name: "",
+            status: "active" as Status,
+          });
         }}
         handleDelete={handleDelete}
       />

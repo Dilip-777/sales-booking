@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { Spinner } from "../ui/Icons";
+import { api } from "@/Api";
 
 export function AddItem({
   selectedItem,
@@ -51,12 +52,12 @@ export function AddItem({
   const [units, setUnits] = useState<Unit[]>([]);
 
   const fetchCategories = async () => {
-    const res = await axios.get("http://localhost:5000/category/getCategories");
+    const res = await api.get("/category/getCategories");
     setCategories(res.data.categories);
   };
 
   const fetchUnits = async () => {
-    const res = await axios.get("http://localhost:5000/unit/getUnits");
+    const res = await api.get("/unit/getUnits");
     setUnits(res.data.units);
   };
 
@@ -82,7 +83,7 @@ export function AddItem({
       e.preventDefault();
       if (item.price === undefined || item.weight === undefined) return;
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/item/create", item);
+      const res = await api.post("/item/create", item);
       setOpen(false);
       setItem({
         id: "",

@@ -25,12 +25,12 @@ import { statuses1 } from "@/components/Data-table/data";
 import { Button } from "@/components/ui/button";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import { Status, Unit } from "@/types/globa";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,7 +49,7 @@ export default function Units() {
 
   const fetchUnits = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:5000/unit/getUnits");
+    const res = await api.get("/unit/getUnits");
     setUnits(res.data.units);
     setLoading(false);
   };
@@ -63,7 +63,7 @@ export default function Units() {
       e.preventDefault();
       if (!unit) return;
       setFormLoading(true);
-      await axios.post("http://localhost:5000/unit/create", {
+      await api.post("/unit/create", {
         ...unit,
       });
       setFormLoading(false);
@@ -79,7 +79,7 @@ export default function Units() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete("http://localhost:5000/unit/delete/" + unit.id);
+      await api.delete("/unit/delete/" + unit.id);
       fetchUnits();
     } catch (error) {
       console.log(error);

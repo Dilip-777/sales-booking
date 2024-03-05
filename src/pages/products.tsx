@@ -14,6 +14,7 @@ import { GetServerSideProps } from "next";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
 import ImportProducts from "@/components/Items/importItems";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +32,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
 
   const fetchItems = async () => {
-    const res = await axios.get("http://localhost:5000/item/getItems");
+    const res = await api.get("/item/getItems");
     setItems(res.data.items);
   };
 

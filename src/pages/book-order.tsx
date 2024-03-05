@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import { Customer, Item, OrderedItem } from "@/types/globa";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import { XCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/Api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -71,9 +71,8 @@ export default function BookOrder() {
 
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/customer/getCustomers?userId=" +
-          session?.user?.id
+      const res = await api.get(
+        "/customer/getCustomers?userId=" + session?.user?.id
       );
       setCustomers(res.data.customers);
     } catch (error) {
@@ -84,9 +83,7 @@ export default function BookOrder() {
   const fetchOrder = async () => {
     try {
       setOrderLoading(true);
-      const res = await axios.get(
-        "http://localhost:5000/order/getOrder/" + orderId
-      );
+      const res = await api.get("/order/getOrder/" + orderId);
 
       const customer = customers.find(
         (customer) => customer.id === res.data.order.customerId
@@ -130,7 +127,7 @@ export default function BookOrder() {
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/item/getItems");
+      const res = await api.get("/item/getItems");
       setItems(res.data.items);
     } catch (error) {
       console.log(error);
@@ -202,12 +199,12 @@ export default function BookOrder() {
         status,
       };
       if (orderId) {
-        await axios.put("http://localhost:5000/order/update", {
+        await api.put("/order/update", {
           ...body,
           id: orderId,
         });
       } else {
-        await axios.post("http://localhost:5000/order/create", body);
+        await api.post("/order/create", body);
       }
       router.push("/");
     } catch (error) {

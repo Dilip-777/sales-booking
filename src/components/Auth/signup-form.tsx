@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { api } from "@/Api";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -31,7 +32,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     event.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/auth/register", user);
+      const res = await api.post("/auth/register", user);
       router.push("/signin");
     } catch (error) {
       console.error(error);
