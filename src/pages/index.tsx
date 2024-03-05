@@ -43,12 +43,14 @@ export default function Home() {
       <DataTableRowActions
         onEdit={(id) => router.push("/book-order?orderId=" + id)}
         handleApprove={
-          session?.user?.role === "MANAGER"
+          session?.user?.role === "MANAGER" &&
+          row.getValue("status") === "ordered"
             ? (id) => router.push("/book-order?orderId=" + id + "&approve=true")
             : undefined
         }
         handleApproveDispatch={
-          session?.user?.role === "DISPATCHER"
+          session?.user?.role === "DISPATCHER" &&
+          row.getValue("status") === "approved"
             ? (id) =>
                 router.push(
                   "/book-order?orderId=" + id + "&approveDispatch=true"
