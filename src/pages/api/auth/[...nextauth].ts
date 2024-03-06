@@ -1,4 +1,3 @@
-import { BACKEND_URL } from "@/Api";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -36,11 +35,14 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         try {
-          const res = await fetch(BACKEND_URL + "/auth/login", {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          });
+          const res = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/login",
+            {
+              method: "POST",
+              body: JSON.stringify(credentials),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
           const data = await res.json();
 

@@ -30,6 +30,13 @@ export function Combobox({
   placeholder?: string;
 }) {
   const [open, setOpen] = React.useState(false);
+
+  console.log("value", value);
+
+  const c = options.find(
+    (options, i) => options.value.toLowerCase().trim() === value.trim()
+  );
+
   //   const [value, setValue] = React.useState("");
 
   return (
@@ -41,10 +48,7 @@ export function Combobox({
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {value
-            ? options.find((options) => options.value.toLowerCase() === value)
-                ?.label
-            : placeholder || "Select an option"}
+          {value ? c?.label : placeholder || "Select an option"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -66,7 +70,9 @@ export function Combobox({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === options.value ? "opacity-100" : "opacity-0"
+                    value.trim() === options.value.toLowerCase().trim()
+                      ? "opacity-100"
+                      : "opacity-0"
                   )}
                 />
                 {options.label}

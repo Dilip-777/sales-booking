@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { api } from "@/Api";
 

@@ -236,6 +236,8 @@ export default function BookOrder() {
       });
   }, [order]);
 
+  console.log(order, "order");
+
   return (
     <main
       className={`flex flex-col items-center gap-4  p-4 ${inter.className}`}
@@ -258,15 +260,16 @@ export default function BookOrder() {
                 <Combobox
                   value={order.customerId}
                   options={customers.map((customer) => ({
-                    value: customer.name,
+                    value: customer.name.toLowerCase(),
                     label: customer.name,
                   }))}
-                  onChange={(value) =>
+                  onChange={(value) => {
+                    console.log(value, "value");
                     setOrder({
                       ...order,
                       customerId: value,
-                    })
-                  }
+                    });
+                  }}
                   placeholder="Select a Customer"
                 />
               </div>
@@ -286,7 +289,7 @@ export default function BookOrder() {
 
             <div className="grid gap-2 my-4  lg:w-1/3">
               <Label htmlFor="total">Select Products</Label>
-              <Combobox
+              {/* <Combobox
                 options={items.map((item) => ({
                   value: item.name,
                   label: item.name,
@@ -294,6 +297,8 @@ export default function BookOrder() {
                 placeholder="Select a Product"
                 value={""}
                 onChange={(value) => {
+                  console.log(value, "value");
+
                   const item = items.find(
                     (item) => item.name.toLowerCase() === value
                   );
@@ -316,7 +321,7 @@ export default function BookOrder() {
                       ],
                     });
                 }}
-              />
+              /> */}
             </div>
 
             {
