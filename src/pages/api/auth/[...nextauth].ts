@@ -47,17 +47,11 @@ export const authOptions: NextAuthOptions = {
           const data = await res.json();
 
           if (data.user) {
-            console.log(data.user, "slkdfjsk");
-
             return data.user;
           } else {
-            console.log("error", data);
-
             return null;
           }
         } catch (error) {
-          console.log(error, "error");
-
           return null;
         }
       },

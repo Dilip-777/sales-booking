@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { getSession } from "next-auth/react";
 import {
@@ -35,8 +35,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import { User } from "next-auth";
 import { api } from "@/Api";
+import { User, Zone } from "@/types/globa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,6 +45,29 @@ export default function Account({ user }: { user: User }) {
   const [editMode, setEditMode] = useState(true);
   const [loading, setLoading] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [user1, setUser] = useState<User | undefined>(user);
+
+  const fetchZones = async () => {
+    try {
+      const res = await api.get("/zone/getZones");
+      setZones(res.data.zones);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchUser = async () => {
+    const res = await api.get("/user/get/" + user?.id);
+    setUser(res.data.user);
+  };
+
+  useEffect(() => {
+    fetchZones();
+    fetchUser();
+  }, []);
+
+  const zone = zones.find((z) => z.id === user1?.zoneId);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -62,6 +85,8 @@ export default function Account({ user }: { user: User }) {
       console.log(error);
     }
   };
+
+  console.log(user, zone, user1);
 
   return (
     <main
@@ -109,10 +134,7 @@ export default function Account({ user }: { user: User }) {
               {editMode ? (
                 <div className="grid grid-cols-2 grid-rows-2 gap-4 text-lg font-normal">
                   <div className="border-t col-span-2  border-gray-300 my-4"></div>
-                  <div>
-                    <div className="text-base font-medium">Id :</div>
-                    <div className="text-sm font-normal">{userData.id}</div>
-                  </div>
+
                   <div>
                     <div className="text-base font-medium">Name :</div>
                     <div className="text-sm font-normal">
@@ -127,16 +149,18 @@ export default function Account({ user }: { user: User }) {
                     <div className="text-base font-medium">Email :</div>
                     <div className="text-sm font-normal">{userData.email}</div>
                   </div>
+                  <div>
+                    <div className="text-base font-medium">Zone :</div>
+                    <div className="text-sm font-normal">
+                      {zone?.name || "N/A"}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div>
                   <div className="border-t col-span-2  border-gray-300 my-4"></div>
                   <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <div className="text-base font-medium">Id :</div>
-                        <div className="text-sm font-normal">{userData.id}</div>
-                      </div>
                       <div>
                         <Label className="text-base font-medium" htmlFor="name">
                           Name :
@@ -149,17 +173,12 @@ export default function Account({ user }: { user: User }) {
                           onChange={(e) =>
                             setUserData({
                               ...userData,
-                              name: e.target.value,
+                              username: e.target.value,
                             })
                           }
                         />
                       </div>
-                      <div>
-                        <div className="text-base font-medium">Role :</div>
-                        <div className="text-sm font-normal">
-                          {userData.role}
-                        </div>
-                      </div>
+
                       <div>
                         <Label className="text-base font-medium" htmlFor="name">
                           Email :{" "}
@@ -177,7 +196,18 @@ export default function Account({ user }: { user: User }) {
                           }
                         />
                       </div>
-                      <div></div>
+                      <div>
+                        <div className="text-base font-medium">Role :</div>
+                        <div className="text-sm font-normal">
+                          {userData.role}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-base font-medium">Zone :</div>
+                        <div className="text-sm font-normal">
+                          {zone?.name || "N/A"}
+                        </div>
+                      </div>
                       <Button
                         className="w-1/3"
                         type="submit"
@@ -253,6 +283,8 @@ export const getServerSideProps: GetServerSideProps = async (req) => {
       },
     };
   }
+
+  const user = await api.get("/user/get/" + session.user?.id);
 
   return {
     props: {

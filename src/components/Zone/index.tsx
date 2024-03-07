@@ -31,6 +31,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import { api } from "@/Api";
+import { useToast } from "../ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,6 +46,7 @@ export default function Zone() {
   });
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { toast } = useToast();
 
   const fetchZones = async () => {
     setLoading(true);
@@ -76,8 +78,19 @@ export default function Zone() {
     try {
       await api.delete("/zone/delete/" + zone.id);
       fetchZones();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Zone Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the zone. Please try again later.",
+      });
     }
   };
 

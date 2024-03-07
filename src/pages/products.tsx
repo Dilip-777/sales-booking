@@ -15,6 +15,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "@/components/Data-table/data-table-row-actions";
 import ImportProducts from "@/components/Items/importItems";
 import { api } from "@/Api";
+import { useToast } from "@/components/ui/use-toast";
+import DeleteModal from "@/components/DeleteModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,11 +31,33 @@ export default function Home() {
     weight: 0,
     unit: "",
   });
+  const [openDelete, setOpenDelete] = useState(false);
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
 
   const fetchItems = async () => {
     const res = await api.get("/item/getItems");
     setItems(res.data.items);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await api.delete("/item/delete/" + item?.id);
+      fetchItems();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Product Deleted Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the order. Please try again later.",
+      });
+    }
   };
 
   useEffect(() => {
@@ -44,6 +68,10 @@ export default function Home() {
     id: "actions",
     cell: ({ row }) => (
       <DataTableRowActions
+        onDelete={() => {
+          setItem(row.original);
+          setOpenDelete(true);
+        }}
         onEdit={() => {
           setItem(row.original);
           setOpen(true);
@@ -82,6 +110,22 @@ export default function Home() {
         columns={columnsWithActions}
         statuses={statuses}
         priorities={priorities}
+      />
+      <DeleteModal
+        open={openDelete}
+        setOpen={(open) => {
+          setOpenDelete(open);
+          setItem({
+            id: "",
+            name: "",
+            description: "",
+            category: "",
+            price: 0,
+            weight: 0,
+            unit: "",
+          });
+        }}
+        handleDelete={handleDelete}
       />
     </main>
   );

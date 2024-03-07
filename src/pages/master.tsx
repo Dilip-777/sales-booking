@@ -16,6 +16,7 @@ import { getSession } from "next-auth/react";
 import DeleteModal from "@/components/DeleteModal";
 import axios from "axios";
 import { api } from "@/Api";
+import { useToast } from "@/components/ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,13 +27,25 @@ export default function Master() {
   });
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const { toast } = useToast();
 
   const handleDelete = async () => {
     try {
       setLoading(true);
       await api.delete("/order/delete?from=" + date?.from + "&to=" + date?.to);
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Orders Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the orders. Please try again later.",
+      });
     }
     setLoading(false);
   };

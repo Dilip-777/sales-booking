@@ -14,6 +14,7 @@ import { LoadingSpinner } from "@/components/ui/Icons";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { api } from "@/Api";
+import { useToast } from "@/components/ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function Users() {
   });
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { toast } = useToast();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -46,8 +48,19 @@ export default function Users() {
     try {
       await api.delete("/user/delete/" + user.id);
       fetchUsers();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "User Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the user. Please try again later.",
+      });
     }
   };
 

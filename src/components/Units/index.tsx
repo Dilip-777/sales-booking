@@ -31,6 +31,7 @@ import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import { Status, Unit } from "@/types/globa";
 import { api } from "@/Api";
+import { useToast } from "../ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,6 +47,7 @@ export default function Units() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { toast } = useToast();
 
   const fetchUnits = async () => {
     setLoading(true);
@@ -81,8 +83,19 @@ export default function Units() {
     try {
       await api.delete("/unit/delete/" + unit.id);
       fetchUnits();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Unit Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the unit. Please try again later.",
+      });
     }
   };
 

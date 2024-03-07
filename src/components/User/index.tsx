@@ -11,6 +11,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import { api } from "@/Api";
+import { useToast } from "../ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default function User() {
   });
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { toast } = useToast();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -48,8 +50,19 @@ export default function User() {
     try {
       await api.delete("/user/delete/" + user.id);
       fetchUsers();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "User Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the user. Please try again later.",
+      });
     }
   };
 

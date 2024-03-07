@@ -91,7 +91,7 @@ export default function BookOrder() {
 
       setOrder({
         id: res.data.order.id,
-        customerId: customer?.name.toLowerCase() || "",
+        customerId: customer?.name.toLowerCase().trim() || "",
         requiredBy: new Date(res.data.order.requiredBy),
         total: res.data.order.total,
         totalweight: res.data.order.totalweight,
@@ -150,7 +150,7 @@ export default function BookOrder() {
       }
 
       const customerId = customers.find(
-        (customer) => customer.name.toLowerCase() === order.customerId
+        (customer) => customer.name.toLowerCase().trim() === order.customerId
       )?.id;
 
       if (!customerId) {
@@ -289,7 +289,7 @@ export default function BookOrder() {
 
             <div className="grid gap-2 my-4  lg:w-1/3">
               <Label htmlFor="total">Select Products</Label>
-              {/* <Combobox
+              <Combobox
                 options={items.map((item) => ({
                   value: item.name,
                   label: item.name,
@@ -321,7 +321,7 @@ export default function BookOrder() {
                       ],
                     });
                 }}
-              /> */}
+              />
             </div>
 
             {
@@ -365,8 +365,8 @@ export default function BookOrder() {
                                 if (idx === index) {
                                   return {
                                     ...i,
-                                    quantity: Number(e.target.value),
-                                    amount: i.price * Number(e.target.value),
+                                    quantity: parseInt(e.target.value),
+                                    amount: i.price * parseInt(e.target.value),
                                   };
                                 }
                                 return i;
@@ -438,37 +438,39 @@ export default function BookOrder() {
               </Table>
             }
 
-            <div className="grid grid-cols-3 gap-8 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="remarks">Remarks</Label>
-                <Input
-                  value={order.remarks || ""}
-                  onChange={(e) =>
-                    setOrder({
-                      ...order,
-                      remarks: e.target.value,
-                    })
-                  }
-                  placeholder="Enter Remarks"
-                />
+            {session?.user?.role === "DISPATCHER" && (
+              <div className="grid grid-cols-3 gap-8 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="remarks">Remarks</Label>
+                  <Input
+                    value={order.remarks || ""}
+                    onChange={(e) =>
+                      setOrder({
+                        ...order,
+                        remarks: e.target.value,
+                      })
+                    }
+                    placeholder="Enter Remarks"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="vehicleno">Vehicle No</Label>
+                  <Input
+                    value={order.vehicleno || ""}
+                    onChange={(e) =>
+                      setOrder({
+                        ...order,
+                        vehicleno: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="issueAmount">Issue Amount</Label>
+                  <Input value={order.issueAmount} placeholder="Issue Amount" />
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="vehicleno">Vehicle No</Label>
-                <Input
-                  value={order.vehicleno || ""}
-                  onChange={(e) =>
-                    setOrder({
-                      ...order,
-                      vehicleno: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="issueAmount">Issue Amount</Label>
-                <Input value={order.issueAmount} placeholder="Issue Amount" />
-              </div>
-            </div>
+            )}
             {/* </div> */}
             <Button disabled={loading} type="submit">
               {loading && <Spinner />}{" "}

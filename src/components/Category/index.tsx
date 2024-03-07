@@ -30,6 +30,7 @@ import {
 } from "../ui/select";
 import DeleteModal from "../DeleteModal";
 import { api } from "@/Api";
+import { useToast } from "../ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default function Category() {
     name: "",
     status: "active" as Status,
   });
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -75,8 +77,19 @@ export default function Category() {
     try {
       await api.delete("/category/delete/" + category.id);
       fetchCategories();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Category Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the category. Please try again later.",
+      });
     }
   };
 

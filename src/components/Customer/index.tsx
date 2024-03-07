@@ -15,6 +15,7 @@ import { DataTableRowActions } from "../Data-table/data-table-row-actions";
 import DeleteModal from "../DeleteModal";
 import ImportCustomers from "./importCustomers";
 import { api } from "@/Api";
+import { useToast } from "../ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,11 +33,16 @@ export default function Customer() {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [zones, setZones] = useState<Zone[]>([]);
+  const { toast } = useToast();
   // const [open, setOpen] = useState(false);
 
   const fetchZones = async () => {
-    const res = await api.get("/zone/getZones");
-    setZones(res.data.zones);
+    try {
+      const res = await api.get("/zone/getZones");
+      setZones(res.data.zones);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -64,8 +70,19 @@ export default function Customer() {
     try {
       await api.delete("/customer/delete/" + customer.id);
       fetchCustomers();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Customer Deleted Successfully",
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the customer. Please try again later.",
+      });
     }
   };
 

@@ -19,13 +19,18 @@ import { DataTableRowActions } from "@/components/Data-table/data-table-row-acti
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { api } from "@/Api";
+import DeleteModal from "@/components/DeleteModal";
+import { useToast } from "@/components/ui/use-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { data: session } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [order, setOrder] = useState<Order | undefined>();
   const router = useRouter();
+  const { toast } = useToast();
 
   const fetchOrders = async () => {
     try {
@@ -34,6 +39,27 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await api.delete("/order/delete?id=" + order?.id);
+      fetchOrders();
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Order Delete Successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "An error occurred while deleting the order. Please try again later.",
+      });
+    }
+    setOrder(undefined);
   };
 
   useEffect(() => {
@@ -45,6 +71,10 @@ export default function Home() {
     cell: ({ row }) => (
       <DataTableRowActions
         onEdit={(id) => router.push("/book-order?orderId=" + id)}
+        onDelete={() => {
+          setOrder(row.original);
+          setOpenDelete(true);
+        }}
         handleApprove={
           session?.user?.role === "MANAGER" &&
           row.getValue("status") === "ordered"
@@ -120,6 +150,14 @@ export default function Home() {
         )}
         statuses={statuses}
         priorities={priorities}
+      />
+      <DeleteModal
+        open={openDelete}
+        setOpen={(open) => {
+          setOpenDelete(open);
+          setOrder(undefined);
+        }}
+        handleDelete={handleDelete}
       />
     </main>
   );
