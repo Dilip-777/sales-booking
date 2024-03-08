@@ -206,7 +206,7 @@ export default function BookOrder() {
       } else {
         await api.post("/order/create", body);
       }
-      // router.push("/");
+      router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -214,13 +214,15 @@ export default function BookOrder() {
   };
 
   useEffect(() => {
-    const total = order.items.reduce((acc, item) => acc + item.amount, 0);
-    const totalweight = order.items.reduce((acc, item) => acc + item.weight, 0);
+    const total = order.items.reduce((acc, item) => acc + item.amount, 0) || 0;
+    const totalweight =
+      order.items.reduce((acc, item) => acc + item.weight, 0) || 0;
 
-    const issueAmount = order.items.reduce(
-      (acc, item) => acc + (item.dispatchedQty || 0) * item.price,
-      0
-    );
+    const issueAmount =
+      order.items.reduce(
+        (acc, item) => acc + (item.dispatchedQty || 0) * item.price,
+        0
+      ) || 0;
 
     if (order.issueAmount !== issueAmount)
       setOrder({
@@ -283,7 +285,7 @@ export default function BookOrder() {
               <div className="grid gap-2">
                 <Label htmlFor="requiredBy">Required By</Label>
                 <DatePicker
-                  value={moment(order.requiredBy, "DD/MM/YYYY").toDate()}
+                  value={order.requiredBy}
                   onChange={(value) =>
                     setOrder({
                       ...order,
@@ -397,7 +399,7 @@ export default function BookOrder() {
                                 if (idx === index) {
                                   return {
                                     ...i,
-                                    dispatchedQty: Number(e.target.value),
+                                    dispatchedQty: parseInt(e.target.value),
                                   };
                                 }
                                 return i;

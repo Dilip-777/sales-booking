@@ -18,10 +18,12 @@ export function DatePicker({
   value,
   onChange,
 }: {
-  value: Date | undefined;
+  value: string | undefined;
   onChange: (date: Date | undefined) => void;
 }) {
   const [date, setDate] = React.useState<Date>();
+
+  console.log(value, "value");
 
   return (
     <Popover>
@@ -37,14 +39,14 @@ export function DatePicker({
           {value ? (
             moment(value, "DD/MM/YYYY").format("DD/MM/YYYY")
           ) : (
-            <span>Pick a Date</span>
+            <span>Pick Dispatch Date</span>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={value}
+          selected={moment(value, "DD/MM/YYYY").toDate()}
           onSelect={onChange}
           initialFocus
         />
