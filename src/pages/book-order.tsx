@@ -28,7 +28,7 @@ const inter = Inter({ subsets: ["latin"] });
 interface OrderType {
   id: string;
   customerId: string;
-  requiredBy: Date | undefined;
+  requiredBy: string | undefined;
   total: number;
   totalweight: number;
   status: string;
@@ -53,7 +53,7 @@ export default function BookOrder() {
   const [order, setOrder] = useState<OrderType>({
     id: "",
     customerId: "",
-    requiredBy: undefined as Date | undefined,
+    requiredBy: undefined as string | undefined,
     total: 0,
     totalweight: 0,
     status: "",
@@ -92,7 +92,7 @@ export default function BookOrder() {
       setOrder({
         id: res.data.order.id,
         customerId: customer?.name.toLowerCase().trim() || "",
-        requiredBy: new Date(res.data.order.requiredBy),
+        requiredBy: res.data.order.requiredBy,
         total: res.data.order.total,
         totalweight: res.data.order.totalweight,
         status: res.data.order.status,
@@ -183,7 +183,7 @@ export default function BookOrder() {
       setLoading(true);
       const body = {
         customerId: customerId,
-        requiredBy: moment(order.requiredBy).format("DD/MM/YYYY"),
+        requiredBy: moment(order.requiredBy, "DD/MM/YYYY").format("DD/MM/YYYY"),
         total: parseFloat(order.total.toFixed(2)),
         totalweight: order.totalweight,
         userId: session?.user?.id,
@@ -206,7 +206,7 @@ export default function BookOrder() {
       } else {
         await api.post("/order/create", body);
       }
-      router.push("/");
+      // router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -237,6 +237,13 @@ export default function BookOrder() {
   }, [order]);
 
   console.log(order, "order");
+
+  console.log(
+    moment(order.requiredBy, "DD/MM/YYYY").toDate(),
+    new Date(order.requiredBy || ""),
+    order.requiredBy,
+    "requiredBy"
+  );
 
   return (
     <main
@@ -276,11 +283,11 @@ export default function BookOrder() {
               <div className="grid gap-2">
                 <Label htmlFor="requiredBy">Required By</Label>
                 <DatePicker
-                  value={order.requiredBy}
+                  value={moment(order.requiredBy, "DD/MM/YYYY").toDate()}
                   onChange={(value) =>
                     setOrder({
                       ...order,
-                      requiredBy: value,
+                      requiredBy: moment(value).format("DD/MM/YYYY"),
                     })
                   }
                 />

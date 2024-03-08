@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import moment from "moment";
 
 export function DatePicker({
   value,
@@ -33,7 +34,11 @@ export function DatePicker({
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, "PPP") : <span>Pick a Date</span>}
+          {value ? (
+            moment(value, "DD/MM/YYYY").format("DD/MM/YYYY")
+          ) : (
+            <span>Pick a Date</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
