@@ -43,7 +43,7 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
+        {table.getColumn("status") && statuses.length > 0 && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
