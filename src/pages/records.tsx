@@ -59,7 +59,7 @@ export default function Record() {
       fromDate.setDate(fromDate.getDate() - 1);
       const res = await api.get(
         "/order/getOrderItems?&from=" +
-          moment(fromDate).format("DD/MM/YYYY") +
+          moment(date?.from).format("DD/MM/YYYY") +
           "&to=" +
           moment(date?.to).format("DD/MM/YYYY") +
           "&userId=" +
