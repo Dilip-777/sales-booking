@@ -206,7 +206,7 @@ export default function BookOrder() {
       } else {
         await api.post("/order/create", body);
       }
-      router.push("/");
+      // router.push("/");
     } catch (error) {
       console.log(error);
     }
